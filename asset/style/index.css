@@ -1,0 +1,70 @@
+@font-face {
+    font-family: rabar13;
+    src: url('./../font/Rabar_013.ttf');
+}
+@font-face {
+    font-family: rabar14;
+    src: url('./../font/Rabar_013.ttf');
+}
+@font-face {
+    font-family: rabar15;
+    src: url('./../font/Rabar_013.ttf');
+}
+@font-face {
+    font-family: vazir-medium;
+    src: url('./../font/vazir-medium.ttf');
+}
+@font-face {
+    font-family: vazir-light;
+    src: url('./../font/vazir-light.ttf');
+}
+body{
+    font-family: rabar15;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+}
+.main-section{
+    background-color:grey;
+    height: 100%;
+    /* background-image: url('./../img/bg.png'); */
+    background-size: cover;
+}
+.header{
+    display: flex;
+    justify-content: space-around;
+    height: 60px;
+    align-items: center;
+    padding-top: 35px;
+}
+.header h1{
+    font-size: 30px;
+    color: white;
+}
+.social{
+    padding: 10px;
+    font-size: 20px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 5px;
+}
+.social i{
+    background: transparent;
+}
+
+.main-desc{
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.main-desc h1{
+    font-size: 45px;
+}
+.main-desc .desc{
+    width: 35%;
+    text-align: right;
+    font-family: vazir-light;
+}
