@@ -24,6 +24,7 @@ body{
     padding: 0;
     height: 100vh;
     width: 100vw;
+    overflow-x: hidden;
 }
 a{
     text-decoration: none;
@@ -132,4 +133,75 @@ a{
 .about-section .howto-2 .note h3 {
     width:  95%;
     text-align: right;
+}
+
+/* MEDIA QUERIES */
+
+/* typical mobiles */
+@media only screen and (min-width: 320px) and (max-width: 479px) {
+    .main-desc .desc{
+        width: 90%;
+        font-size: 20px;
+    }
+    .main-desc .download-btns img{
+        width: 100%;
+    }
+    .main-section {
+        background-position-x: -350px;
+        background-color: #561f9f;
+    }
+    .howto-2{
+        background-image: none;
+    }
+}
+
+/* mobile landscape */
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+    .main-desc .desc{
+        width: 90%;
+        font-size: 20px;
+    }
+    .main-desc .download-btns img{
+        width: 100%;
+    }
+    .main-section {
+        background-position-x: -350px;
+        background-color: #561f9f;
+    }
+    .howto-2{
+        background-image: none;
+    }
+}
+
+/* tablet */
+@media only screen and (min-width: 768px) and (max-width: 979px) {
+    .main-desc .desc{
+        width: 90%;
+        font-size: 20px;
+    }
+    .main-desc .download-btns img{
+        width: 100%;
+    }
+    .main-section {
+        background-position-x: -350px;
+        background-color: #561f9f;
+    }
+    .howto-2{
+        background-image: none;
+    }
+}
+
+/* small desktop */
+@media only screen and (min-width: 980px) and (max-width: 1023px) {
+    
+}
+
+/* typical desktop */
+@media only screen and (min-width: 1024px) and (max-width: 1199px) {
+    
+}
+
+/* large desktop */
+@media only screen and (min-width: 1200px) {
+    
 }
