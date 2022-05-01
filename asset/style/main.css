@@ -1,0 +1,61 @@
+@font-face {
+  font-family: rabar13;
+  src: url("./../font/Rabar013.ttf");
+}
+@font-face {
+  font-family: rabar14;
+  src: url("./../font/Rabar014.ttf");
+}
+@font-face {
+  font-family: rabar15;
+  src: url("./../font/Rabar015.ttf");
+}
+@font-face {
+  font-family: vazirmedium;
+  src: url("./../font/vazirmedium.ttf");
+}
+@font-face {
+  font-family: vazirlight;
+  src: url("./../font/vazirlight.ttf");
+}
+
+body {
+  margin: 0;
+  direction: rtl;
+}
+nav {
+  background-color: rgb(252, 249, 255);
+}
+
+nav a {
+  color: rgb(54, 21, 111);
+  text-align: center;
+  text-decoration: none;
+  font-size: 17px;
+  font-family: vazirlight;
+}
+nav a:hover {
+  color: rgb(128, 67, 249);
+}
+
+.pepu-text {
+  font-weight: 900;
+  color: rgb(128, 67, 249);
+}
+.papu-header {
+  font-family: rabar15;
+  font-size: 50px;
+  color: 36156f;
+  font-weight: 1000;
+}
+.hero-image {
+  height: 600px;
+}
+.apple,
+.google {
+  width: 200px;
+}
+.pepu-desc {
+  font-size: 25px;
+  font-family: rabar15;
+}
