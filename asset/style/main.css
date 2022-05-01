@@ -59,3 +59,13 @@ nav a:hover {
   font-size: 25px;
   font-family: rabar15;
 }
+.chart-img {
+  width: 500px;
+}
+.papu-st-exam {
+  margin-top: 20px;
+  font-family: rabar15;
+  font-weight: 1000;
+  font-size: 20px;
+  color: 65537d;
+}
