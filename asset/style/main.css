@@ -62,10 +62,53 @@ nav a:hover {
 .chart-img {
   width: 500px;
 }
-.papu-st-exam {
-  margin-top: 20px;
+
+.feature-icon {
+  width: 100px;
+}
+.feature-text {
   font-family: rabar15;
-  font-weight: 1000;
-  font-size: 20px;
+  font-size: 25px;
   color: 65537d;
+  font-weight: 300;
+}
+.feature-button {
+  background-color: rgb(146, 65, 254);
+  color: white;
+  font-family: rabar15;
+  font-size: 18px;
+  border-radius: 10px;
+  text-decoration: none;
+  border-color: rgb(146, 65, 254);
+}
+
+.feature-button1 {
+  padding-right: 150px;
+}
+.zansty-tab {
+  color: rgb(78, 49, 129);
+  font-family: rabar15;
+  font-weight: 600;
+  font-size: 60px;
+}
+
+.zansty-subject {
+  color: rgb(78, 49, 129);
+  font-family: rabar15;
+  font-weight: 400;
+  font-size: 30px;
+}
+.subject-option-zansty {
+  font-family: rabar15;
+  font-size: 30px;
+  font-weight: 400px;
+  padding-top: 40px;
+  color: rgb(78, 49, 129);
+}
+.subject-option-wezhay {
+  font-family: rabar15;
+  font-size: 30px;
+  font-weight: 400px;
+  padding-top: 40px;
+  color: rgb(78, 49, 129);
 }
