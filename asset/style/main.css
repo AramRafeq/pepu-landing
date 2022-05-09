@@ -112,3 +112,43 @@ nav a:hover {
   padding-top: 40px;
   color: rgb(78, 49, 129);
 }
+.course-image {
+  width: 80%;
+}
+
+.papu-logo {
+  height: 200px;
+  width: 200px;
+}
+
+.papu-description {
+  font-family: rabar15;
+  font-size: 25px;
+  font-weight: 800;
+  color: rgb(54, 21, 111);
+}
+.papu-description2 {
+  font-family: rabar15;
+  font-size: 30px;
+  font-weight: 600;
+  color: rgb(54, 21, 111);
+}
+
+.icons {
+  background-color: rgb(54, 21, 111);
+  border-radius: 15px;
+  height: 50px;
+  width: 50px;
+}
+.last-section {
+  padding-top: 300px;
+}
+.list {
+  height: 60px;
+  width: 60px;
+  background-color: rgb(146, 65, 254);
+  border-radius: 10px;
+  padding-right: 10px;
+  margin-top: 200px;
+  margin-bottom: 200px;
+}
