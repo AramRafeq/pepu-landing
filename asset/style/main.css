@@ -143,12 +143,27 @@ nav a:hover {
 .last-section {
   padding-top: 300px;
 }
-.list {
-  height: 60px;
-  width: 60px;
+.box {
+  height: 50px;
+  width: 50px;
   background-color: rgb(146, 65, 254);
   border-radius: 10px;
   padding-right: 10px;
-  margin-top: 200px;
+}
+.papu-binift {
+  font-family: rabar15;
+  font-size: 15px;
+  color: rgb(54, 21, 111);
+}
+.stun1 {
+  margin-bottom: 200px;
+}
+.nusin-stun1 {
+  margin-bottom: 200px;
+}
+.stun2 {
+  margin-bottom: 200px;
+}
+.nusin-stun2 {
   margin-bottom: 200px;
 }
