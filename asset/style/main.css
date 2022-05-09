@@ -61,6 +61,8 @@ nav a:hover {
 }
 .chart-img {
   width: 500px;
+  padding-top: 200px;
+  padding-bottom: 200px;
 }
 
 .feature-icon {
