@@ -154,8 +154,9 @@ nav a:hover {
 }
 .papu-binift {
   font-family: rabar15;
-  font-size: 15px;
+  font-size: 20px;
   color: rgb(54, 21, 111);
+  text-align: right !important;
 }
 .stun1 {
   margin-bottom: 200px;
