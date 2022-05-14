@@ -123,28 +123,26 @@ nav a:hover {
   width: 200px;
 }
 
-.papu-description {
+.pepu-slogan {
   font-family: rabar15;
-  font-size: 25px;
-  font-weight: 800;
+  font-size: 22px;
   color: rgb(54, 21, 111);
 }
-.papu-description2 {
+.copyright {
   font-family: rabar15;
-  font-size: 30px;
-  font-weight: 600;
   color: rgb(54, 21, 111);
 }
 
-.icons {
+.footer-icons {
   background-color: rgb(54, 21, 111);
-  border-radius: 15px;
-  height: 50px;
-  width: 50px;
+  border-radius: 1000px;
+  padding: 10px;
+  height: 35px;
+  width: 35px;
+  display: inline-block;
 }
-.last-section {
-  padding-top: 300px;
-}
+
+
 .box {
   height: 50px;
   width: 50px;
@@ -169,4 +167,8 @@ nav a:hover {
 }
 .nusin-stun2 {
   margin-bottom: 200px;
+}
+
+.footer-container{
+  display: flex  !important;
 }
