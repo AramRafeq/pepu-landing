@@ -22,20 +22,8 @@
 body {
   margin: 0;
   direction: rtl;
-}
-nav {
-  background-color: rgb(252, 249, 255);
-}
-
-nav a {
-  color: rgb(54, 21, 111);
-  text-align: center;
-  text-decoration: none;
-  font-size: 17px;
-  font-family: vazirlight;
-}
-nav a:hover {
-  color: rgb(128, 67, 249);
+  margin-right: 10px;
+  margin-left: 10px;
 }
 
 .pepu-text {
@@ -43,8 +31,14 @@ nav a:hover {
   color: rgb(128, 67, 249);
 }
 .papu-header {
-  font-family: rabar15;
-  font-size: 50px;
+  font-family: rabar13;
+  font-size: 5em;
+  color: 36156f;
+  font-weight: 1000;
+}
+.papu-header-mob {
+  font-family: rabar13;
+  font-size: 7em;
   color: 36156f;
   font-weight: 1000;
 }
@@ -55,82 +49,44 @@ nav a:hover {
 .google {
   width: 200px;
 }
+.apple-mob,
+.google-mob {
+  width: 45%;
+}
 .pepu-desc {
-  font-size: 25px;
-  font-family: rabar15;
+  font-size: 1.5em;
+  font-family: vazirlight;
+  font-weight: 100;
 }
-.chart-img {
-  width: 500px;
-  padding-top: 200px;
-  padding-bottom: 200px;
-}
-
-.feature-icon {
-  width: 100px;
-}
-.feature-text {
-  font-family: rabar15;
-  font-size: 25px;
-  color: 65537d;
-  font-weight: 300;
-}
-.feature-button {
-  background-color: rgb(146, 65, 254);
-  color: white;
-  font-family: rabar15;
-  font-size: 18px;
-  border-radius: 10px;
-  text-decoration: none;
-  border-color: rgb(146, 65, 254);
+.pepu-desc-mob {
+  font-size:2.5em;
+  font-family: vazirlight;
+  font-weight: 100;
 }
 
-.feature-button1 {
-  padding-right: 150px;
-}
-.zansty-tab {
-  color: rgb(78, 49, 129);
-  font-family: rabar15;
-  font-weight: 600;
-  font-size: 60px;
-}
-
-.zansty-subject {
-  color: rgb(78, 49, 129);
-  font-family: rabar15;
-  font-weight: 400;
-  font-size: 30px;
-}
-.subject-option-zansty {
-  font-family: rabar15;
-  font-size: 30px;
-  font-weight: 400px;
-  padding-top: 40px;
-  color: rgb(78, 49, 129);
-}
-.subject-option-wezhay {
-  font-family: rabar15;
-  font-size: 30px;
-  font-weight: 400px;
-  padding-top: 40px;
-  color: rgb(78, 49, 129);
-}
 .course-image {
   width: 80%;
 }
 
-.papu-logo {
-  height: 200px;
-  width: 200px;
-}
 
 .pepu-slogan {
-  font-family: rabar15;
+  font-family: vazirlight;
   font-size: 22px;
   color: rgb(54, 21, 111);
 }
-.copyright {
-  font-family: rabar15;
+.pepu-slogan-mob {
+  font-family: vazirlight;
+  font-size: 3em;
   color: rgb(54, 21, 111);
+}
+.copyright {
+  font-family: vazirlight;
+  color: rgb(54, 21, 111);
+}
+.copyright-mob {
+  font-family: vazirlight;
+  color: rgb(54, 21, 111);
+  font-size: 2em;
 }
 
 .footer-icons {
@@ -141,32 +97,41 @@ nav a:hover {
   width: 35px;
   display: inline-block;
 }
+.footer-icons-mob {
+  background-color: rgb(54, 21, 111);
+  border-radius: 1000px;
+  padding: 2em;
+  height: 5em;
+  width: 5em;
+  display: inline-block;
+}
 
 
 .box {
-  height: 50px;
-  width: 50px;
+  height: 40px;
+  width: 40px;
   background-color: rgb(146, 65, 254);
-  border-radius: 10px;
-  padding-right: 10px;
 }
-.papu-binift {
-  font-family: rabar15;
-  font-size: 20px;
+.box-mob{
+  height: 6em;
+  width: 6em;
+  border-radius: 16px;;
+  background-color: rgb(146, 65, 254);
+}
+.papu-benefit {
+  font-family: vazirlight;
+  font-size: 18px;
   color: rgb(54, 21, 111);
   text-align: right !important;
 }
-.stun1 {
-  margin-bottom: 200px;
+.papu-benefit-mob {
+  font-family: vazirlight;
+  font-size: 2em;
+  color: rgb(54, 21, 111);
+  text-align: right !important;
 }
-.nusin-stun1 {
-  margin-bottom: 200px;
-}
-.stun2 {
-  margin-bottom: 200px;
-}
-.nusin-stun2 {
-  margin-bottom: 200px;
+.pepu-avatar-mob{
+  width: 60%;
 }
 
 .footer-container{
