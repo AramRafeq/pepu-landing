@@ -235,7 +235,8 @@
       <img class="mb-6" src="./asset/img/papu.svg" width="300" height="150" />
       <h3 class="pepu-slogan mt-6 mb-3">کێشەی خوێندن چارەسەر بکە بە یەک کلیک</h3>
       <a href=""><img class="apple" src="./asset/img/appstore.svg" /></a>
-      <a href="https://play.google.com/store/apps/details?id=io.hesta.pepu"><img class="google" src="./asset/img/gplay.svg" /></a>
+      <a href="https://play.google.com/store/apps/details?id=io.hesta.pepu"><img class="google"
+          src="./asset/img/gplay.svg" /></a>
     </div>
     <div class="is-align-self-center is-flex-grow-0">
       <a class="footer-icons" href="#"> <img src="./asset/img/insta.svg " /> </a>
@@ -257,7 +258,8 @@
       <h3 class="pepu-slogan-mob mt-6 mb-3">کێشەی خوێندن چارەسەر بکە بە یەک کلیک</h3>
       <a href=""><img class="apple-mob" src="./asset/img/appstore.svg" /></a>
       &nbsp;&nbsp;
-      <a href="https://play.google.com/store/apps/details?id=io.hesta.pepu"><img class="google-mob" src="./asset/img/gplay.svg" /></a>
+      <a href="https://play.google.com/store/apps/details?id=io.hesta.pepu"><img class="google-mob"
+          src="./asset/img/gplay.svg" /></a>
     </div>
     <div class="is-align-self-center is-flex-grow-0">
       <a class="footer-icons-mob" href="#"> <img src="./asset/img/insta.svg" /> </a>
@@ -269,6 +271,38 @@
 
 
   </section>
+
+  <!-- Messenger Chat plugin Code -->
+  <div id="fb-root"></div>
+
+  <!-- Your Chat plugin code -->
+  <div id="fb-customer-chat" class="fb-customerchat">
+  </div>
+
+  <script>
+    var chatbox = document.getElementById('fb-customer-chat');
+    chatbox.setAttribute("page_id", "102162639123374");
+    chatbox.setAttribute("attribution", "biz_inbox");
+  </script>
+
+  <!-- Your SDK code -->
+  <script>
+    window.fbAsyncInit = function () {
+      FB.init({
+        xfbml: true,
+        version: 'v13.0'
+      });
+    };
+
+    (function (d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+  </script>
+
 </body>
 
 </html>
