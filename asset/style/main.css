@@ -38,7 +38,7 @@ body {
 }
 .papu-header-mob {
   font-family: rabar13;
-  font-size: 7em;
+  font-size: 3em;
   color: 36156f;
   font-weight: 1000;
 }
@@ -59,7 +59,7 @@ body {
   font-weight: 100;
 }
 .pepu-desc-mob {
-  font-size:2.5em;
+  font-size:0.9em;
   font-family: vazirlight;
   font-weight: 100;
 }
@@ -76,7 +76,7 @@ body {
 }
 .pepu-slogan-mob {
   font-family: vazirlight;
-  font-size: 3em;
+  font-size: 1em;
   color: rgb(54, 21, 111);
 }
 .copyright {
@@ -86,7 +86,7 @@ body {
 .copyright-mob {
   font-family: vazirlight;
   color: rgb(54, 21, 111);
-  font-size: 2em;
+  font-size: 0.5em;
 }
 
 .footer-icons {
@@ -100,9 +100,9 @@ body {
 .footer-icons-mob {
   background-color: rgb(54, 21, 111);
   border-radius: 1000px;
-  padding: 2em;
-  height: 5em;
-  width: 5em;
+  padding: 1em;
+  height: 3em;
+  width: 3em;
   display: inline-block;
 }
 
@@ -113,8 +113,9 @@ body {
   background-color: rgb(146, 65, 254);
 }
 .box-mob{
-  height: 6em;
-  width: 6em;
+  display: none;
+  height: 2em;
+  width: 2em;
   border-radius: 16px;;
   background-color: rgb(146, 65, 254);
 }
@@ -126,7 +127,7 @@ body {
 }
 .papu-benefit-mob {
   font-family: vazirlight;
-  font-size: 2em;
+  font-size: 0.9em;
   color: rgb(54, 21, 111);
   text-align: right !important;
 }
