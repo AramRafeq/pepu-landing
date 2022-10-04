@@ -1,0 +1,16 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "io.hesta.pepu",
+            "sha256_cert_fingerprints": [
+                "38:4D:84:7A:89:C8:58:5D:B7:2E:E4:E0:BF:4E:19:7E:65:51:EC:DE:34:83:5B:B8:37:7C:1A:A9:90:D8:83:0E",
+                "46:CC:1E:76:72:09:AD:F7:5A:FF:31:D3:7E:83:4F:E2:40:B8:DD:2D:6A:D0:BE:E6:4C:42:96:79:05:20:63:A9",
+                "A6:C3:64:82:CE:8E:DB:52:5A:7F:6A:39:B7:44:05:BD:25:EB:8E:C6:6F:63:86:42:37:FE:4A:F3:C1:EE:D7:6D"
+            ]
+        }
+    }
+]
