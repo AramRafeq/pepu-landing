@@ -90,6 +90,7 @@ body {
 }
 
 .footer-icons {
+  color:white;
   background-color: rgb(54, 21, 111);
   border-radius: 1000px;
   padding: 10px;
@@ -98,6 +99,7 @@ body {
   display: inline-block;
 }
 .footer-icons-mob {
+  color:white;
   background-color: rgb(54, 21, 111);
   border-radius: 1000px;
   padding: 1em;
