@@ -1,0 +1,34 @@
+.about__desc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 35px;
+}
+
+.about__desc p {
+  margin: 0;
+  width: 100%;
+  font-size: 18px;
+  text-align: right;
+  color: rgb(54, 21, 111);
+}
+
+.boxs {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: rgb(146, 65, 254);
+  box-shadow: 7px 6px 35px -6px rgba(0, 0, 0, 0.7);
+  padding: 22px;
+  margin-left: 40px;
+}
+
+@media screen and (max-width: 767px) {
+  .boxs {
+    display: none;
+  }
+  .about__desc p {
+    font-size: 16px;
+  }
+}
