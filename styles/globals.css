@@ -1,0 +1,50 @@
+@font-face {
+  font-family: rabar;
+  src: url(../src/assets/fonts/Rabar_013.ttf);
+}
+
+@font-face {
+  font-family: vazirlight;
+  src: url(../src/assets/fonts/vazirlight.ttf);
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  /* direction: rtl; */
+}
+
+a {
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: vazirlight, sans-serif;
+}
+
+.faq-header {
+  font-size: 2.5rem;
+  color: #36156f;
+  text-align: center;
+  margin-bottom: 40px;
+  font-weight: bolder;
+  margin-top: 12px;
+}
+
+.faq-paragraph {
+  font-size: 1.3rem;
+  text-align: center;
+  color: rgb(54, 21, 111);
+  margin-bottom: 40px;
+}
+@media screen and (max-width: 767px) {
+  .faq-paragraph {
+    font-size: 0.8rem;
+  }
+}

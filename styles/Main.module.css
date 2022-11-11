@@ -1,0 +1,40 @@
+.pepu__header {
+  font-size: 80px;
+  color: #36156f;
+  margin-bottom: 48px;
+  font-family: rabar, sans-serif;
+}
+
+.pepu__desc {
+  font-size: 24px;
+  line-height: 40px;
+}
+
+.pepu__download {
+  margin-top: 30px;
+  max-width: 430px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.applestore,
+.googleplay {
+  max-width: 200px;
+  width: 40vw;
+}
+
+@media screen and (max-width: 767px) {
+  .pepu__desc {
+    font-size: 14px;
+    line-height: 25px;
+  }
+  .pepu__header {
+    font-size: 48px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .pepu__download {
+    display: flex;
+    margin-top: 16px;
+  }
+}
