@@ -2,7 +2,6 @@
 import React from 'react';
 import Script from 'next/script';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
-import { MessengerChat } from "react-messenger-chat-plugin";
 class PepuDocument extends Document {
     static async getInitialProps(ctx) {
         const initialProps = await Document.getInitialProps(ctx);
@@ -31,7 +30,6 @@ class PepuDocument extends Document {
                     <meta property="twitter:image" content="https://static.pepu.krd/cover.png" />
 
                     <meta property="og:image" content="https://static.pepu.krd/cover.png" />
-                    <Script id="facebook-jssdk" src="https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js"></Script>
                     <Script async="" src="https://www.googletagmanager.com/gtag/js?id=G-KVSEKXR4NP"></Script>
                     <Script
                         id="google-analytics"
@@ -43,17 +41,42 @@ class PepuDocument extends Document {
                                     gtag('config', 'G-KVSEKXR4NP');`,
                         }}
                     />
+                    <Script
+                        id="fb-init"
+                        dangerouslySetInnerHTML={{
+                            __html: `
+                                var chatbox = document.getElementById('fb-customer-chat');
+                                chatbox.setAttribute("page_id", "102162639123374");
+                                chatbox.setAttribute("attribution", "biz_inbox");
+                            `,
+                        }}
+                    />
+                    <Script
+                        id="fb-script"
+                        dangerouslySetInnerHTML={{
+                            __html: `
+                             window.fbAsyncInit = function() {
+                                FB.init({
+                                  xfbml            : true,
+                                  version          : 'v15.0'
+                                });
+                              };
+                        
+                              (function(d, s, id) {
+                                var js, fjs = d.getElementsByTagName(s)[0];
+                                if (d.getElementById(id)) return;
+                                js = d.createElement(s); js.id = id;
+                                js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+                                fjs.parentNode.insertBefore(js, fjs);
+                              }(document, 'script', 'facebook-jssdk'));
+                            `,
+                        }}
+                    />
 
                 </Head>
                 <body>
-                    <MessengerChat
-                        pageId="102162639123374"
-                        language="en_US"
-                        themeColor={"#9241FE"}
-                        bottomSpacing={300}
-                        greetingDialogDisplay={"icon"}
-                        debugMode={false}
-                    />
+                    <div id="fb-root"></div>
+                    <div id="fb-customer-chat" class="fb-customerchat"></div>
                     <Main />
                     <NextScript />
                 </body>
