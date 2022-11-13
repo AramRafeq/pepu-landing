@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-title-in-document-head */
 import React from 'react';
-import Script from 'next/script';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 class PepuDocument extends Document {
     static async getInitialProps(ctx) {
@@ -30,8 +29,8 @@ class PepuDocument extends Document {
                     <meta property="twitter:image" content="https://static.pepu.krd/cover.png" />
 
                     <meta property="og:image" content="https://static.pepu.krd/cover.png" />
-                    <Script async="" src="https://www.googletagmanager.com/gtag/js?id=G-KVSEKXR4NP"></Script>
-                    <Script
+                    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-KVSEKXR4NP"></script>
+                    <script
                         id="google-analytics"
                         dangerouslySetInnerHTML={{
                             __html: `window.dataLayer = window.dataLayer || [];
@@ -41,7 +40,7 @@ class PepuDocument extends Document {
                                     gtag('config', 'G-KVSEKXR4NP');`,
                         }}
                     />
-                    <Script
+                    <script
                         id="fb-init"
                         dangerouslySetInnerHTML={{
                             __html: `
@@ -51,7 +50,7 @@ class PepuDocument extends Document {
                             `,
                         }}
                     />
-                    <Script
+                    <script
                         id="fb-script"
                         dangerouslySetInnerHTML={{
                             __html: `
