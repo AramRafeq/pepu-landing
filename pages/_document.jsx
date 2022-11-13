@@ -2,7 +2,7 @@
 import React from 'react';
 import Script from 'next/script';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
-
+import { MessengerChat } from "react-messenger-chat-plugin";
 class PepuDocument extends Document {
     static async getInitialProps(ctx) {
         const initialProps = await Document.getInitialProps(ctx);
@@ -46,6 +46,14 @@ class PepuDocument extends Document {
 
                 </Head>
                 <body>
+                    <MessengerChat
+                        pageId="102162639123374"
+                        language="en_US"
+                        themeColor={"#9241FE"}
+                        bottomSpacing={300}
+                        greetingDialogDisplay={"icon"}
+                        debugMode={false}
+                    />
                     <Main />
                     <NextScript />
                 </body>

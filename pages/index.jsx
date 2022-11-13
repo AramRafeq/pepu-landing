@@ -13,7 +13,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no" />
       </Head>
 
-      <Layout break style={{ backgroundColor: "white" }}>
+      <Layout style={{ backgroundColor: "white" }}>
         <Layout.Content
           className="main-container"
         >
