@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-title-in-document-head */
+import Script from 'next/script';
 import React from 'react';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 class PepuDocument extends Document {
@@ -29,48 +30,7 @@ class PepuDocument extends Document {
                     <meta property="twitter:image" content="https://static.pepu.krd/cover.png" />
 
                     <meta property="og:image" content="https://static.pepu.krd/cover.png" />
-                    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-KVSEKXR4NP"></script>
-                    <script
-                        id="google-analytics"
-                        dangerouslySetInnerHTML={{
-                            __html: `window.dataLayer = window.dataLayer || [];
-                                    function gtag() {dataLayer.push(arguments); }
-                                    gtag('js', new Date());
-
-                                    gtag('config', 'G-KVSEKXR4NP');`,
-                        }}
-                    />
-                    <script
-                        id="fb-init"
-                        dangerouslySetInnerHTML={{
-                            __html: `
-                                var chatbox = document.getElementById('fb-customer-chat');
-                                chatbox.setAttribute("page_id", "102162639123374");
-                                chatbox.setAttribute("attribution", "biz_inbox");
-                            `,
-                        }}
-                    />
-                    <script
-                        id="fb-script"
-                        dangerouslySetInnerHTML={{
-                            __html: `
-                             window.fbAsyncInit = function() {
-                                FB.init({
-                                  xfbml            : true,
-                                  version          : 'v15.0'
-                                });
-                              };
-                        
-                              (function(d, s, id) {
-                                var js, fjs = d.getElementsByTagName(s)[0];
-                                if (d.getElementById(id)) return;
-                                js = d.createElement(s); js.id = id;
-                                js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
-                                fjs.parentNode.insertBefore(js, fjs);
-                              }(document, 'script', 'facebook-jssdk'));
-                            `,
-                        }}
-                    />
+                    <Script async="" src="https://www.googletagmanager.com/gtag/js?id=G-KVSEKXR4NP"></Script>
 
                 </Head>
                 <body>
