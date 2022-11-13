@@ -88,7 +88,7 @@ const Faq = () => (
       پرسیاری زیاتر پەیوەندیمان پێوە بکەن
     </Typography>
     <Row align="middle" justify="center" style={{ padding: "10px" }}>
-      <Col span={18}>
+      <Col lg={18} md={18} sm={24} xs={24}>
         <Collapse bordered={false} style={{ background: 'white', fontSize: '1.1rem' }} accordion>
           {data.map((item, index) => (
             <Panel key={index + 1} header={item.title}>

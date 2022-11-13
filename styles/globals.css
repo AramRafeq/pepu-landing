@@ -45,8 +45,20 @@ a {
   margin-bottom: 40px;
 }
 
+.main-container {
+  padding: 4rem;
+  padding-right: 6rem;
+  padding-left: 6rem;
+}
+
 @media screen and (max-width: 767px) {
   .faq-paragraph {
     font-size: 0.8rem;
+  }
+
+  .main-container {
+    padding: "10px";
+    padding-right: 10px;
+    padding-left: 10px;
   }
 }

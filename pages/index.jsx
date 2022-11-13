@@ -15,11 +15,7 @@ export default function Home() {
 
       <Layout break style={{ backgroundColor: "white" }}>
         <Layout.Content
-          style={{
-            padding: "4rem",
-            paddingRight: '6rem',
-            paddingLeft: '6rem',
-          }}
+          className="main-container"
         >
           {/* Main Section */}
           <Row
