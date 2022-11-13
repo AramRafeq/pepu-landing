@@ -1,11 +1,11 @@
 @font-face {
   font-family: rabar;
-  src: url(../src/assets/fonts/Rabar_013.ttf);
+  src: url("/assets/fonts/Rabar_013.ttf");
 }
 
 @font-face {
   font-family: vazirlight;
-  src: url(../src/assets/fonts/vazirlight.ttf);
+  src: url("/assets/fonts/vazirlight.ttf");
 }
 
 html,
@@ -35,6 +35,7 @@ a {
   margin-bottom: 40px;
   font-weight: bolder;
   margin-top: 12px;
+  font-family: rabar;
 }
 
 .faq-paragraph {
@@ -43,6 +44,7 @@ a {
   color: rgb(54, 21, 111);
   margin-bottom: 40px;
 }
+
 @media screen and (max-width: 767px) {
   .faq-paragraph {
     font-size: 0.8rem;
