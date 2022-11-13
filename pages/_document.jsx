@@ -34,8 +34,6 @@ class PepuDocument extends Document {
 
                 </Head>
                 <body>
-                    <div id="fb-root"></div>
-                    <div id="fb-customer-chat" class="fb-customerchat"></div>
                     <Main />
                     <NextScript />
                 </body>
