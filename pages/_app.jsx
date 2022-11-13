@@ -51,7 +51,8 @@ function App({ Component, pageProps }) {
         }}
       />
       <ConfigProvider direction="rtl">
-
+        <div id="fb-root"></div>
+        <div id="fb-customer-chat" class="fb-customerchat"></div>
         <Component {...pageProps} />
       </ConfigProvider>
     </>
