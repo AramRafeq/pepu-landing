@@ -5,7 +5,7 @@ export default function App() {
         setTimeout(function () {
             // Link to the App Store should go here -- only fires if deep link fails                
             window.location = "https://onelink.to/pepu";
-        }, 2000);
+        }, 5000);
     }, [])
     return (
         <>
