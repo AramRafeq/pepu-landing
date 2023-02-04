@@ -7,7 +7,7 @@ function App({ Component, pageProps }) {
   return (
     <>
       <Script
-        strategy='lazyOnload'
+        strategy="lazyOnload"
         id="google-analytics"
         dangerouslySetInnerHTML={{
           __html: `window.dataLayer = window.dataLayer || [];
@@ -19,7 +19,7 @@ function App({ Component, pageProps }) {
       />
       <Script
         id="fb-init"
-        strategy='lazyOnload'
+        strategy="lazyOnload"
         dangerouslySetInnerHTML={{
           __html: `
               var chatbox = document.getElementById('fb-customer-chat');
@@ -29,7 +29,7 @@ function App({ Component, pageProps }) {
         }}
       />
       <Script
-        strategy='lazyOnload'
+        strategy="lazyOnload"
         id="fb-script"
         dangerouslySetInnerHTML={{
           __html: `
@@ -52,12 +52,11 @@ function App({ Component, pageProps }) {
       />
       <ConfigProvider direction="rtl">
         <div id="fb-root"></div>
-        <div id="fb-customer-chat" class="fb-customerchat"></div>
+        <div id="fb-customer-chat" className="fb-customerchat"></div>
         <Component {...pageProps} />
       </ConfigProvider>
     </>
   );
-
 }
 
 export default App;
