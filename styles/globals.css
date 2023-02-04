@@ -1,0 +1,64 @@
+@font-face {
+  font-family: rabar;
+  src: url("/assets/fonts/Rabar_013.ttf");
+}
+
+@font-face {
+  font-family: vazirlight;
+  src: url("/assets/fonts/vazirlight.ttf");
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  /* direction: rtl; */
+}
+
+a {
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: vazirlight, sans-serif;
+}
+
+.faq-header {
+  font-size: 2.5rem;
+  color: #36156f;
+  text-align: center;
+  margin-bottom: 40px;
+  font-weight: bolder;
+  margin-top: 12px;
+  font-family: rabar;
+}
+
+.faq-paragraph {
+  font-size: 1.3rem;
+  text-align: center;
+  color: rgb(54, 21, 111);
+  margin-bottom: 40px;
+}
+
+.main-container {
+  padding: 4rem;
+  padding-right: 6rem;
+  padding-left: 6rem;
+}
+
+@media screen and (max-width: 767px) {
+  .faq-paragraph {
+    font-size: 0.8rem;
+  }
+
+  .main-container {
+    padding: 10px !important;
+    padding-right: 10px !important;
+    padding-left: 10px !important;
+  }
+}

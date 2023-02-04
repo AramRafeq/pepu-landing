@@ -1,0 +1,166 @@
+/* Main Section Styling */
+.pepu__header {
+    font-size: 80px;
+    color: #36156f;
+    margin-bottom: 48px;
+    font-family: rabar, sans-serif;
+}
+
+.pepu__desc {
+    font-size: 1.3rem;
+    line-height: 40px;
+}
+
+.pepu__download {
+    margin-top: 30px;
+    max-width: 430px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.applestore,
+.googleplay {
+    max-width: 200px;
+    width: 40vw;
+}
+
+@media screen and (max-width: 767px) {
+    .pepu__desc {
+        font-size: 14px;
+        line-height: 25px;
+    }
+
+    .pepu__header {
+        font-size: 48px;
+        margin-bottom: 16px;
+        text-align: center;
+    }
+
+    .pepu__download {
+        display: flex;
+        margin-top: 16px;
+    }
+}
+
+/* About section */
+.about__desc {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 35px;
+}
+
+.about__desc p {
+    margin: 0;
+    width: 100%;
+    font-size: 18px;
+    text-align: right;
+    color: rgb(54, 21, 111);
+}
+
+.boxs {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background-color: rgb(146, 65, 254);
+    box-shadow: 7px 6px 35px -6px rgba(0, 0, 0, 0.7);
+    padding: 22px;
+    margin-left: 40px;
+}
+
+@media screen and (max-width: 767px) {
+    .boxs {
+        display: none;
+    }
+
+    .about__desc p {
+        font-size: 16px;
+    }
+}
+
+/* Footer Section */
+.footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 100px;
+}
+
+.pepu__logo {
+    width: 100%;
+    height: auto;
+    margin-bottom: 60px;
+}
+
+.footer span {
+    font-size: 22px;
+    color: rgb(54, 21, 111);
+    text-align: center;
+}
+
+.downloads {
+    padding-top: 8px;
+    padding-bottom: 90px;
+    display: flex;
+}
+
+.downloads a {
+    margin-left: 15px;
+}
+
+.downloads a img {
+    width: 200px;
+}
+
+.copyright {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+.copyright div>a {
+    margin-left: 20px;
+    font-size: 25px;
+}
+
+.copyright span {
+    margin-top: 10px;
+    font-size: 15px;
+}
+
+@media screen and (max-width: 767px) {
+    .footer {
+        margin-top: 100px;
+    }
+
+    .pepu__logo {
+        width: 70%;
+    }
+
+    .footer span {
+        font-size: 17px;
+    }
+
+    .downloads {
+        flex-direction: column;
+    }
+
+    .downloads a {
+        margin-top: 10px;
+    }
+
+    .downloads a img {
+        width: 150px;
+        margin-left: -5px;
+        margin-right: 10px;
+    }
+
+    .copyright span {
+        margin-top: 10px;
+        font-size: 13px;
+    }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "pepu-landing",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "npx next dev",
+    "build": "npx next build",
+    "start": "npx next start ",
+    "export": "next export  -o docs & node ./postBuild.js",
+    "lint": "npx next lint"
+  },
+  "dependencies": {
+    "antd": "^4.24.1",
+    "next": "13.0.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-icons": "^4.6.0"
+  },
+  "devDependencies": {
+    "eslint": "8.26.0",
+    "eslint-config-next": "13.0.1"
+  }
+}
