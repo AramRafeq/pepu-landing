@@ -1,6 +1,5 @@
 import Script from "next/script";
 import { ConfigProvider } from "antd";
-import "antd/dist/antd.css";
 
 import "../styles/globals.css";
 function App({ Component, pageProps }) {
