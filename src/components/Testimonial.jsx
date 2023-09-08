@@ -2,6 +2,7 @@ import { Avatar, Collapse } from "antd";
 import React from "react";
 import { Row, Col, Typography, Card, Tooltip } from "antd";
 import { AiOutlineUser } from "react-icons/ai";
+import useTranslation from "next-translate/useTranslation";
 const { Panel } = Collapse;
 
 const data = [
@@ -114,9 +115,12 @@ const data = [
   },
 ];
 
-const Testimonial = () => (
-  <>
-    <Typography className="sub-header">بەکارهێنەرانی پەپوو</Typography>
+const Testimonial = () => {
+  const { t, lang } = useTranslation("general");
+  return <>
+    <Typography className="sub-header">{t(
+      "header.pepuUsers"
+    )}</Typography>
     <Row
       gutter={[10, 10]}
       align="middle"
@@ -147,5 +151,5 @@ const Testimonial = () => (
       })}
     </Row>
   </>
-);
+};
 export default Testimonial;

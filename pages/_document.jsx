@@ -10,7 +10,7 @@ class PepuDocument extends Document {
 
     render() {
         return (
-            <Html>
+            <Html lang="ku" dir="rtl">
                 <Head>
                     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
                     <meta name="title" content="پەپوو | هاوڕێی خوێندنت" />

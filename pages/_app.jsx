@@ -1,8 +1,25 @@
 import Script from "next/script";
 import { ConfigProvider } from "antd";
-
+import useTranslation from "next-translate/useTranslation";
+import { useEffect } from "react";
 import "../styles/globals.css";
+import useWindowAvailable from "../utils/useWindows";
+
 function App({ Component, pageProps }) {
+  const { isWindowAvailable } = useWindowAvailable();
+  const { lang } = useTranslation("general");
+
+  useEffect(() => {
+    if (isWindowAvailable && lang) {
+      const element = document.getElementsByTagName("html")[0];
+
+      if (lang === "en") {
+        element.setAttribute("dir", "ltr");
+      } else {
+        element.setAttribute("dir", "rtl");
+      }
+    }
+  }, [isWindowAvailable, lang]);
   return (
     <>
       <Script
@@ -49,7 +66,12 @@ function App({ Component, pageProps }) {
                             `,
         }}
       />
-      <ConfigProvider direction="rtl">
+      <ConfigProvider   theme={{
+      token: {
+        colorPrimary: '#9241FE',
+        borderRadius: 2,
+      },
+    }}>
         <div id="fb-root"></div>
         <div id="fb-customer-chat" className="fb-customerchat"></div>
         <Component {...pageProps} />
