@@ -1,0 +1,11 @@
+{
+    "locales": ["ku", "en", "ar"],
+    "defaultLocale": "ku",
+    "localeDetection": false,
+    "loadLocaleFromPath": true,
+    "pages": {
+      "*": [
+        "general"
+      ]
+    }
+  }

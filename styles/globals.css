@@ -35,14 +35,17 @@ a {
   margin-bottom: 40px;
   font-weight: bolder;
   margin-top: 12px;
-  font-family: rabar;
+  font-family: rabar ;
 }
 
 .faq-paragraph {
   font-size: 1.3rem;
+  margin: auto;
+  width: 70%;
   text-align: center;
   color: rgb(54, 21, 111);
   margin-bottom: 40px;
+  font-family: rabar ;
 }
 
 .main-container {
@@ -51,9 +54,40 @@ a {
   padding-left: 6rem;
 }
 
+.pepu-desc {
+  font-size: 1.8rem;
+  line-height: 45px;
+  font-weight: 500;
+  font-family: rabar, sans-serif; 
+}
+
+.footer-title{
+  margin: auto;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
 @media screen and (max-width: 767px) {
+  .footer-title{
+    margin: auto;
+    width: 80%;
+    text-align: center;
+  }
+  .pepu-desc {
+    font-size: 1.2rem;
+    font-weight: 500;
+    line-height: 30px;
+    margin: auto;
+    width: 80%;
+    text-align: center;
+    font-family: rabar, sans-serif; 
+}
   .faq-paragraph {
-    font-size: 0.8rem;
+    font-size: 1.2rem;
+    margin: auto;
+    width: 80%;
+    color: #36156f;
+    padding-bottom: 36px;
   }
 
   .main-container {
@@ -61,4 +95,8 @@ a {
     padding-right: 10px !important;
     padding-left: 10px !important;
   }
+}
+
+.dropdown-style{
+  font-size: '32px',
 }

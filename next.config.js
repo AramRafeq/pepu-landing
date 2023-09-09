@@ -1,9 +1,9 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactStrictMode: false,
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-};
+const nextTranslate = require('next-translate-plugin');
 
-module.exports = nextConfig;
+/** @type {import('next').NextConfig} */
+module.exports = nextTranslate({
+  reactStrictMode: false, 
+  publicRuntimeConfig: {
+    useCookie: true,
+  },
+}) 

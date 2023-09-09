@@ -1,0 +1,90 @@
+{
+  "__General__": "General Translation keys",
+  "read-more": "Read More",
+  "language-en": "English",
+  "language-ku": "کوردی",
+  "language-ar": "عربي",
+  "english": "English",
+  "kurdish": "کوردی",
+  "arabic": "عربي",
+  
+    "meta_title":"Pepu | Your study buddy",
+
+
+    "__Header__": "Header Translation keys",
+    "header": {
+      "title": "Pepu",
+      "description": "Pepu is a new educational platform aimed at supporting students for better learning outcomes and achieving higher grades.",
+      "pepuUsers": "Pepu Users",
+      "features": "Features",
+      "features_1": "Access thousands of specialized questions and exercises",
+      "features_2": "Video lectures",
+      "features_3": "Revisiting and practicing questions for better retention",
+      "features_4": "Efficient and easy-to-use, with minimal time for maximum results",
+      "features_5": "Comprehensive knowledge on your reading level",
+      "features_6": "Customized reminders to guide your study based on your profile"
+    },
+  
+    "__Faq__": "Faq Translation keys",
+    "faq": {
+      "faq_title": "Frequently Asked Questions",
+      "paragraph": "Here, we provide answers to some common questions. Feel free to reach out if you have more questions or need further assistance.",
+      "title_1": "What is Pepu?",
+      "content_1": "Pepu is a new educational platform aimed at supporting students for better learning outcomes and achieving higher grades.",
+  
+      "title_2": "What does Pepu offer?",
+      "content_2": "Support for students to improve their grades, better self-assessment, and achieving higher grades.",
+  
+      "title_3": "Is Pepu free, or do I need to pay for it?",
+      "content_3": "When signing up and registering on Pepu, you can use it for free for a limited time. However, for continued success in Pepu and to access more features, you need to subscribe to one of Pepu's packages, which offers affordable rates for students.",
+  
+      "title_4": "Why do I need to pay for Pepu?",
+      "content_4": "Pepu provides a high-quality and well-structured educational service that requires financial support to maintain its quality and continuous development. Currently, over 20 people work on Pepu to improve and enhance the system for better learning outcomes and an easier experience for users.",
+  
+      "title_5": "What is the cost of subscribing to Pepu?",
+      "content_5": "The subscription cost for a Pepu package is approximately 9,000 Iraqi Dinars for a three-month period. Subsequent package renewals are only 3,000 Iraqi Dinars per month.",
+  
+      "title_6": "What benefits do I get from upgrading to one of these packages?",
+      "content_6": {
+        "point1": "Access to more than 2,500 specialized questions from ministries and various subjects",
+        "point2": "Achieving self-assessment and time management for questions and answers",
+        "point3": "Selecting questions by subject and chapter",
+        "point4": "Several themes and supplementary information for students to better understand the material",
+        "point5": "Revisiting a previously taken test",
+        "point6": "Sharing Pepu questions with your peers",
+        "upgradeBenefits": {
+          "title": "Upgrading to one of these packages provides the following benefits:",
+          "point1": "Access to more than 7,000 ministry questions and answers",
+          "point2": "Access to questions from expert teachers in a special assistance section",
+          "point3": "Access to flashcards (a practical tool for students to easily access topics)",
+          "point4": "List of the best students of the month",
+          "point5": "More supplementary information about yourself, so you can show it to your peers"
+        }
+      },
+  
+      "title_7": "How quickly do Pepu questions and answers get updated?",
+      "content_7": "Currently, all the questions on Pepu are updated by the academic team of teachers in the Pepu team, ensuring continuous improvement for a better learning experience.",
+  
+      "title_8": "Which levels is Pepu available for?",
+      "content_8": "Currently, Pepu is available for grades 12 and 9. However, we are actively working to expand Pepu to cover more levels and subjects to meet the needs of our users.",
+  
+      "title_9": "How can I maximize my benefits from Pepu?",
+      "content_9": "One of the main features of Pepu that benefits you is that Pepu offers the most high-quality and high-quality questions. The first line that you take on Pepu gets the most questions and top-quality questions. The second line, which you can use regularly, gets you ahead of the other lines and increases your chances of getting better grades. The rest of the lines that Pepu offers are for optional use.",
+  
+      "title_10": "How can I register on Pepu?",
+      "content_10": "For registration, please watch this video tutorial: [Registration Video](https://www.youtube.com/embed/DIrCREsDaE4)",
+  
+      "title_11": "How can I take a test on Pepu?",
+      "content_11": "For taking a test, please watch this video tutorial: [Taking a Test Video](https://www.youtube.com/embed/PeEXAqyqazQ)",
+  
+      "title_12": "How can I subscribe to a Pepu package?",
+      "content_12": "For subscribing to a Pepu package, please watch this video tutorial: [Subscription Video](https://www.youtube.com/embed/TNri2w_tFSg)"
+    },
+  
+    "__Footer__": "Footer Translation keys",
+    "footer": {
+      "title": "Unlock the key to better learning with a single click",
+      "privacy": "All rights reserved for Pepu"
+    }
+  }
+  

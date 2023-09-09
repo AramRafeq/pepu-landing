@@ -2,14 +2,10 @@
 .pepu__header {
     font-size: 80px;
     color: #36156f;
-    margin-bottom: 48px;
+    margin-bottom: 36px;
     font-family: rabar, sans-serif;
 }
 
-.pepu__desc {
-    font-size: 1.3rem;
-    line-height: 40px;
-}
 
 .pepu__download {
     margin-top: 30px;
@@ -164,3 +160,10 @@
         font-size: 13px;
     }
 }
+
+
+.ant-dropdown-menu-item {
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+    /* Add any other styles you want */
+  }
