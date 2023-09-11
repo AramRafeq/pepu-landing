@@ -1,19 +1,18 @@
 import { Layout, Row, Col, Typography } from "antd";
 import { BsFacebook, BsInstagram } from "react-icons/bs";
-import { DownOutlined, UserOutlined,GlobalOutlined } from '@ant-design/icons';
+import { DownOutlined, UserOutlined, GlobalOutlined } from "@ant-design/icons";
 import Faq from "../src/components/Faq";
 import Testimonial from "../src/components/Testimonial";
 import Features from "../src/components/Features";
 import Style from "../styles/index.module.css";
 import Head from "next/head";
-import  useTranslation  from "next-translate/useTranslation";
+import useTranslation from "next-translate/useTranslation";
 import { useEffect, useMemo } from "react";
 import useWindowAvailable from "~/utils/useWindows";
 import RightAngle from "~/icons/RightAngle";
 import { LANGUAGES } from "~/utils/constants";
-import { Button, Dropdown, message, Space, Tooltip,Menu } from 'antd';
+import { Button, Dropdown, message, Space, Tooltip, Menu } from "antd";
 import { handleLanguageChange } from "~/utils/general";
-
 
 export default function Home() {
   const { t, lang } = useTranslation("general");
@@ -32,36 +31,30 @@ export default function Home() {
     handleLanguageChange(e.key);
   };
 
-  const languageOptions  =
-    LANGUAGES.map(({ slug, name }) => {
-      if (slug !== lang)
-        return (
-          {
-            key:`${slug}`,
-            label: `${t(name)}`,
-          }
-        );
-    })
-;
+  const languageOptions = LANGUAGES.map(({ slug, name }) => {
+    if (slug !== lang)
+      return {
+        key: `${slug}`,
+        label: `${t(name)}`,
+      };
+  });
+  const menuStyle = {
+    fontSize: "16px",
+  };
 
-
-const menuStyle = {
-  fontSize: '16px',
-};
-
-const buttonStyle = {
-  paddingInline:"18px",
-  height:"45px",
-  borderRadius:"1000px",
-  alignItems:"center",
-  justifyContent:"center",
-};
+  const buttonStyle = {
+    paddingInline: "18px",
+    height: "45px",
+    borderRadius: "1000px",
+    alignItems: "center",
+    justifyContent: "center",
+  };
 
   const menuProps = {
     items: languageOptions,
     onClick: handleMenuClick,
   };
-  
+
   return (
     <>
       <Head>
@@ -74,10 +67,14 @@ const buttonStyle = {
 
       <Layout style={{ backgroundColor: "white" }}>
         <Layout.Content className="main-container">
-
           {/* Header */}
-          <Dropdown  menu={menuProps} menuStyle={menuStyle} id="menu-dropdown" className="dropdown-style">
-            <Button style={buttonStyle} >
+          <Dropdown
+            menu={menuProps}
+            menuStyle={menuStyle}
+            id="menu-dropdown"
+            className="dropdown-style"
+          >
+            <Button style={buttonStyle}>
               <Space style={menuStyle}>
                 {getCurrentLang}
                 <GlobalOutlined />
@@ -192,3 +189,5 @@ const buttonStyle = {
     </>
   );
 }
+
+export const runtime = "edge";
