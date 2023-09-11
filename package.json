@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "npx next dev",
-    "build": "npx next build && rm -rf .next/cache",
+    "build": "npx next build && rm -rf cache",
     "start": "npx next start ",
     "lint": "npx next lint"
   },
