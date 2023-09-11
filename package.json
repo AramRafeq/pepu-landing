@@ -6,7 +6,6 @@
     "dev": "npx next dev",
     "build": "npx next build",
     "start": "npx next start ",
-    "export": "next export  -o docs & node ./postBuild.js",
     "lint": "npx next lint"
   },
   "dependencies": {
