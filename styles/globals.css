@@ -35,7 +35,7 @@ a {
   margin-bottom: 40px;
   font-weight: bolder;
   margin-top: 12px;
-  font-family: rabar ;
+  font-family: rabar;
 }
 
 .faq-paragraph {
@@ -45,7 +45,7 @@ a {
   text-align: center;
   color: rgb(54, 21, 111);
   margin-bottom: 40px;
-  font-family: rabar ;
+  font-family: rabar;
 }
 
 .main-container {
@@ -58,21 +58,23 @@ a {
   font-size: 1.8rem;
   line-height: 45px;
   font-weight: 500;
-  font-family: rabar, sans-serif; 
+  /* font-family: rabar, sans-serif;  */
+  font-family: vazirlight, sans-serif;
 }
 
-.footer-title{
+.footer-title {
   margin: auto;
   text-align: center;
   margin-bottom: 20px;
 }
 
 @media screen and (max-width: 767px) {
-  .footer-title{
+  .footer-title {
     margin: auto;
     width: 80%;
     text-align: center;
   }
+
   .pepu-desc {
     font-size: 1.2rem;
     font-weight: 500;
@@ -80,8 +82,10 @@ a {
     margin: auto;
     width: 80%;
     text-align: center;
-    font-family: rabar, sans-serif; 
-}
+    /* font-family: rabar, sans-serif;  */
+    font-family: vazirlight, sans-serif;
+  }
+
   .faq-paragraph {
     font-size: 1.2rem;
     margin: auto;
@@ -97,6 +101,6 @@ a {
   }
 }
 
-.dropdown-style{
+.dropdown-style {
   font-size: '32px',
 }
