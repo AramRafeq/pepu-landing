@@ -13,4 +13,3 @@ export default function App() {
     </>
   );
 }
-export const runtime = "edge";
