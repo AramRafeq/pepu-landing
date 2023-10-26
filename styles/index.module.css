@@ -85,9 +85,9 @@
 }
 
 .pepu__logo {
-    width: 100%;
+    width: 35%;
     height: auto;
-    margin-bottom: 60px;
+    margin-bottom: 0px;
 }
 
 .footer span {
@@ -166,4 +166,4 @@
     font-size: 16px;
     font-family: Arial, sans-serif;
     /* Add any other styles you want */
-  }
+}

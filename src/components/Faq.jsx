@@ -106,22 +106,22 @@ const getFaqData = (t) => {
         </>
       ),
     },
-    {
-      title: t("faq.title_12"),
-      content: (
-        <>
-          <iframe
-            width="100%"
-            height="415"
-            src="https://www.youtube.com/embed/TNri2w_tFSg"
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-          ></iframe>
-        </>
-      ),
-    },
+    // {
+    //   title: t("faq.title_12"),
+    //   content: (
+    //     <>
+    //       <iframe
+    //         width="100%"
+    //         height="415"
+    //         src="https://www.youtube.com/embed/TNri2w_tFSg"
+    //         title="YouTube video player"
+    //         frameborder="0"
+    //         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    //         allowfullscreen
+    //       ></iframe>
+    //     </>
+    //   ),
+    // },
   ];
 }
 

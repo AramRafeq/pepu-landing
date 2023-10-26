@@ -122,6 +122,15 @@ export default function Home() {
                         />
                       </a>
                     </Col>
+                    <Col style={{ textAlign: "center" }} xs={24} md={8} sm={12}>
+                      <a href="https://app.pepu.krd">
+                        <img
+                          className={Style.googleplay}
+                          src="/assets/web-app.svg"
+                          alt="Use Web App"
+                        />
+                      </a>
+                    </Col>
                   </Row>
                 </Col>
               </Row>
@@ -137,8 +146,9 @@ export default function Home() {
                   height: "75vh",
                   maxWidth: "90vw",
                   objectFit: "contain",
+                  marginTop: -100
                 }}
-                src="/assets/papu.svg"
+                src="/assets/pepu-landing.svg"
                 alt="Pepu App img"
               />
             </Col>
@@ -151,9 +161,9 @@ export default function Home() {
           <Faq />
           {/* Footer */}
           <Row justify={"center"} align="middle" className={Style.footer}>
-            <Col span={24}>
+            <Col span={24} style={{ textAlign: 'center' }}>
               <img
-                src="/assets/papu.svg"
+                src="/assets/pepu-landing01.svg"
                 alt="Pepu Logo"
                 className={Style.pepu__logo}
               />
@@ -168,6 +178,9 @@ export default function Home() {
                 </a>
                 <a href="https://play.google.com/store/apps/details?id=io.hesta.pepu">
                   <img src="assets/gplay.svg" alt="Google Play" />
+                </a>
+                <a href="https://app.pepu.krd">
+                  <img src="assets/web-app.svg" alt="Web App" />
                 </a>
               </div>
 
