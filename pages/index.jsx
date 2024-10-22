@@ -176,7 +176,7 @@ export default function Home() {
                 <a href="https://apps.apple.com/iq/app/pepu-%D9%BE%DB%95%D9%BE%D9%88%D9%88/id1625456812">
                   <img src="/assets/appstore.svg" alt="Apple Store" />
                 </a>
-                <a href="https://play.google.com/store/apps/details?id=io.hesta.pepu">
+                <a href="https://play.google.com/store/apps/details?id=io.hesta.pepu_2">
                   <img src="assets/gplay.svg" alt="Google Play" />
                 </a>
                 <a href="https://app.pepu.krd">
