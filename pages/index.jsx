@@ -114,7 +114,7 @@ export default function Home() {
                       </a>
                     </Col>
                     <Col style={{ textAlign: "center" }} xs={24} md={8} sm={12}>
-                      <a href="https://play.google.com/store/apps/details?id=io.hesta.pepu">
+                      <a href="https://play.google.com/store/apps/details?id=io.hesta.pepu_2">
                         <img
                           className={Style.googleplay}
                           src="/assets/gplay.svg"
