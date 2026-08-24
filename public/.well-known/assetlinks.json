@@ -1,6 +1,35 @@
 [
     {
         "relation": [
+            "delegate_permission/common.handle_all_urls",
+            "delegate_permission/common.get_login_creds"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "io.hesta.pepu_2",
+            "sha256_cert_fingerprints": [
+                "25:E8:74:FA:8B:54:E8:72:91:03:9B:CF:9F:AC:71:A2:8C:8A:B8:5A:B7:96:DC:64:B8:BD:40:3D:19:0D:64:A9"
+            ]
+        }
+    },
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "io.hesta.pepu_2",
+            "sha256_cert_fingerprints": [
+                "38:4D:84:7A:89:C8:58:5D:B7:2E:E4:E0:BF:4E:19:7E:65:51:EC:DE:34:83:5B:B8:37:7C:1A:A9:90:D8:83:0E",
+                "46:CC:1E:76:72:09:AD:F7:5A:FF:31:D3:7E:83:4F:E2:40:B8:DD:2D:6A:D0:BE:E6:4C:42:96:79:05:20:63:A9",
+                "61:B5:88:6D:F6:87:86:9D:BC:D8:A9:42:C9:9F:36:09:63:01:4F:E5:28:35:F5:9C:86:BA:C7:DE:07:5D:10:0A",
+                "81:5A:0A:16:78:48:ED:75:34:3D:47:A6:95:D8:A7:19:30:02:C2:E1:C3:77:D7:34:E0:32:E4:90:AB:4E:1D:EA",
+                "E1:D4:ED:9D:FD:48:70:11:2C:B3:C2:25:63:51:3D:1D:68:5F:61:31:32:07:0A:96:62:40:89:E1:2F:C1:FC:C4"
+            ]
+        }
+    },
+    {
+        "relation": [
             "delegate_permission/common.handle_all_urls"
         ],
         "target": {

@@ -122,7 +122,7 @@ export default function Home() {
                         />
                       </a>
                     </Col>
-                    <Col style={{ textAlign: "center" }} xs={24} md={8} sm={12}>
+                    {/* <Col style={{ textAlign: "center" }} xs={24} md={8} sm={12}>
                       <a href="https://app.pepu.krd">
                         <img
                           className={Style.googleplay}
@@ -130,7 +130,7 @@ export default function Home() {
                           alt="Use Web App"
                         />
                       </a>
-                    </Col>
+                    </Col> */}
                   </Row>
                 </Col>
               </Row>
