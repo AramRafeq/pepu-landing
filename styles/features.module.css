@@ -1,0 +1,23 @@
+/* borderless feature rows: icon, text, hairline — no cards */
+.card {
+  height: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 22px 4px;
+  border-top: 1px solid #ececf1;
+}
+
+.card p {
+  margin: 0;
+  line-height: 2;
+  color: #444;
+}
+
+.icon {
+  flex: none;
+  margin-top: 3px;
+  color: #9241fe;
+  font-size: 1.25rem;
+  display: flex;
+}

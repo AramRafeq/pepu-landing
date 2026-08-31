@@ -29,13 +29,25 @@ a {
 }
 
 .sub-header {
-  font-size: 2.5rem;
-  color: #36156f;
-  text-align: center;
-  margin-bottom: 40px;
+  font-size: clamp(1.45rem, 3.2vw, 2rem);
+  color: #1d1b20;
+  text-align: start;
+  margin: 72px 0 28px;
   font-weight: bolder;
-  margin-top: 12px;
   font-family: rabar;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* one small accent mark, nothing more */
+.sub-header::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: #9241fe;
+  flex: none;
 }
 
 .faq-paragraph {
@@ -103,4 +115,7 @@ a {
 
 .dropdown-style {
   font-size: '32px',
+}
+html {
+  scroll-behavior: smooth;
 }

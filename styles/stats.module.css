@@ -1,0 +1,27 @@
+.section {
+  margin: 24px 0 8px;
+}
+
+.stat {
+  height: 100%;
+  text-align: center;
+  padding: 22px 12px;
+  background: linear-gradient(180deg, #faf7ff 0%, #ffffff 100%);
+  border: 1px solid #efeaf7;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.value {
+  font-family: rabar, sans-serif;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  color: #9241fe;
+  font-weight: 700;
+}
+
+.label {
+  color: #666;
+  font-size: 0.95rem;
+}

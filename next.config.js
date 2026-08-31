@@ -8,6 +8,18 @@ module.exports = nextTranslate({
   },
 
   async headers() {
+    // Non-breaking hardening: HSTS, MIME-sniff off, clickjacking off, tight
+    // referrer, and a permissive-but-present CSP (frame-ancestors/object/base
+    // + https upgrade only — it deliberately does NOT restrict script/style/
+    // connect, so GA, Firebase and the FB widget keep working).
+    const securityHeaders = [
+      { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+      { key: "X-Content-Type-Options", value: "nosniff" },
+      { key: "X-Frame-Options", value: "SAMEORIGIN" },
+      { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+      { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=()" },
+      { key: "Content-Security-Policy", value: "frame-ancestors 'self'; object-src 'none'; base-uri 'self'; upgrade-insecure-requests" },
+    ];
     return [
       {
         // Apple refuses an association file that isn't served as JSON, and the
@@ -28,6 +40,7 @@ module.exports = nextTranslate({
           { key: "Cache-Control", value: "public, max-age=300" },
         ],
       },
+      { source: "/(.*)", headers: securityHeaders },
     ];
   },
 });

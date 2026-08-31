@@ -1,0 +1,130 @@
+.section {
+  padding: 24px 0 20px;
+}
+
+.sourceNote {
+  text-align: center;
+  color: #8a8794;
+  font-size: 0.95rem;
+  margin-top: -28px;
+  margin-bottom: 28px;
+}
+
+.card {
+  height: 100%;
+  background: #ffffff;
+  border: 1px solid #ececf1;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(41, 45, 50, 0.05);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 12px 30px rgba(146, 65, 254, 0.12);
+  transform: translateY(-3px);
+  border-color: #e9d9ff;
+}
+
+/* Ant's Card padding is generous for a card this small. */
+.card :global(.ant-card-body) {
+  padding: 26px 26px 22px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.avatar {
+  background: linear-gradient(135deg, #9241fe, #b47bff);
+  color: #fff;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.name {
+  font-weight: 600;
+  color: #1d1b20;
+  font-size: 1.05rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.date {
+  color: #9a8fb0;
+  font-size: 0.8rem;
+}
+
+.stars {
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: #f5a623;
+}
+
+.text {
+  margin: 0;
+  color: #444;
+  line-height: 1.9;
+  font-size: 1.02rem;
+  flex-grow: 1;
+  white-space: pre-line;
+  word-break: break-word;
+}
+
+/* Collapsed state. Expanding is a real button, so the full text is
+   reachable on touch devices where a hover tooltip never was. */
+.clamped {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.more {
+  padding: 4px 0 0;
+  height: auto;
+  align-self: flex-start;
+  font-size: 0.88rem;
+}
+
+.showAllWrap {
+  text-align: center;
+  margin-top: 28px;
+}
+
+.showAll {
+  border-radius: 999px;
+  height: 46px;
+  padding-inline: 32px;
+  border-color: #9241fe;
+  color: #9241fe;
+  font-weight: 600;
+}
+
+.showAll:hover {
+  background: #9241fe !important;
+  color: #fff !important;
+}
+
+@media screen and (max-width: 767px) {
+  .section {
+    padding: 16px 0 12px;
+  }
+
+  .sourceNote {
+    margin-top: -16px;
+    font-size: 0.88rem;
+  }
+}

@@ -55,7 +55,7 @@
     "title_7": "How quickly do Pepu questions and answers get updated?",
     "content_7": "Currently, all the questions on Pepu are updated by the academic team of teachers in the Pepu team, ensuring continuous improvement for a better learning experience.",
     "title_8": "Which levels is Pepu available for?",
-    "content_8": "Currently, Pepu is available for grades 12 and 9. However, we are actively working to expand Pepu to cover more levels and subjects to meet the needs of our users.",
+    "content_8": "Currently, Pepu is available for grades 7, 8, 9, 10, 11 and 12 (literary and scientific), plus grade 12 of the English curriculum. We keep expanding it to cover more levels.",
     "title_9": "How can I maximize my benefits from Pepu?",
     "content_9": "One of the main features of Pepu that benefits you is that Pepu offers the most high-quality and high-quality questions. The first line that you take on Pepu gets the most questions and top-quality questions. The second line, which you can use regularly, gets you ahead of the other lines and increases your chances of getting better grades. The rest of the lines that Pepu offers are for optional use.",
     "title_10": "How can I register on Pepu?",
@@ -69,5 +69,21 @@
   "footer": {
     "title": "Unlock the key to better learning with a single click",
     "privacy": "All rights reserved for Pepu"
-  }
+  },
+  "__Stats__": "",
+  "stats": {
+    "title": "Pepu by the numbers",
+    "students": "Users",
+    "questions": "Questions answered",
+    "exams": "Exams completed",
+    "rating": "User rating"
+  },
+  "__Testimonials__": "",
+  "testimonials": {
+    "source": "Real reviews from Google Play users",
+    "more": "Read more",
+    "less": "Show less",
+    "showAll": "See all reviews"
+  },
+  "subscribeCta": "Subscribe / Renew plan"
 }

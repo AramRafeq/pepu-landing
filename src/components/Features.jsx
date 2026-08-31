@@ -1,65 +1,49 @@
 import React from "react";
-import { Row, Col, Typography } from "antd";
-import Style from "../../styles/index.module.css";
+import { Col, Row, Typography } from "antd";
+import {
+  BsBarChartLine,
+  BsBell,
+  BsCameraVideo,
+  BsLightningCharge,
+  BsPatchQuestion,
+  BsArrowRepeat,
+} from "react-icons/bs";
 import useTranslation from "next-translate/useTranslation";
+import Style from "../../styles/features.module.css";
+
+/* Icon per translation key — the copy stays in locales, untouched. */
+const FEATURES = [
+  { key: "features_1", Icon: BsPatchQuestion },
+  { key: "features_2", Icon: BsCameraVideo },
+  { key: "features_3", Icon: BsArrowRepeat },
+  { key: "features_4", Icon: BsLightningCharge },
+  { key: "features_5", Icon: BsBarChartLine },
+  { key: "features_6", Icon: BsBell },
+];
 
 const Features = () => {
-  const { t, lang } = useTranslation("general");
-  return <>
-    <Typography className="sub-header">{t(
-      "header.features"
-    )}</Typography>
-    <Row
-      align={"middle"}
-      justify={"space-between"}
-      style={{ marginBottom: "30px" }}
-    >
-      <Col md={8} xs={24} style={{ maxWidth: "93%" }}>
-        <div className={Style.about__desc}>
-          <div className={Style.boxs}/>
-          <p>{t("header.features_1")}</p>
-        </div>
-        <div className={Style.about__desc}>
-          <div className={Style.boxs} />
-          <p>{t("header.features_2")}</p>
-        </div>
-        <div className={Style.about__desc}>
-          <div className={Style.boxs} />
-          <p>{t("header.features_3")}</p>
-        </div>
-      </Col>
-      <Col md={5} xs={24} style={{ textAlign: "center" }}>
-        <img
-          src="/assets/pepuscreenshoot.svg"
-          alt="Pepu Screen"
-          height={"700"}
-          style={{
-            maxWidth: "80vw",
-            maxHeight: "70%",
-            objectFit: "contain",
+  const { t } = useTranslation("general");
 
-          }}
-        />
-      </Col>
-      <Col md={8} xs={24} style={{ maxWidth: "93%" }}>
-        <div className={Style.about__desc}>
-          <div className={Style.boxs} />
-          <p>
-          {t("header.features_4")}
-          </p>
-        </div>
-        <div className={Style.about__desc}>
-          <div className={Style.boxs} />
-          <p>{t("header.features_5")}</p>
-        </div>
-        <div className={Style.about__desc}>
-          <div className={Style.boxs} />
-          <p>
-          {t("header.features_6")}
-          </p>
-        </div>
-      </Col>
-    </Row>
-  </>
+  return (
+    <section aria-labelledby="features-heading">
+      <Typography id="features-heading" className="sub-header">
+        {t("header.features")}
+      </Typography>
+
+      <Row gutter={[16, 16]} align="stretch">
+        {FEATURES.map(({ key, Icon }) => (
+          <Col key={key} xs={24} sm={12} lg={8}>
+            <div className={Style.card}>
+              <span className={Style.icon} aria-hidden="true">
+                <Icon />
+              </span>
+              <p>{t(`header.${key}`)}</p>
+            </div>
+          </Col>
+        ))}
+      </Row>
+    </section>
+  );
 };
+
 export default Features;
