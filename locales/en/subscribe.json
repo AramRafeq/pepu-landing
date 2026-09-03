@@ -75,5 +75,6 @@
   "programFree": "Free — claim it in the app",
   "myPrograms": "My purchased programs",
   "programPaid": "Program purchased 🎉 — find it in the Pepu app's video marketplace",
-  "plansTab": "Packages"
+  "plansTab": "Packages",
+  "restoreTimedOut": "Couldn't load your account — please sign in again"
 }

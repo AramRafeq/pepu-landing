@@ -58,6 +58,23 @@ export const normalizeDigits = (value) =>
     .replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 0x0660))
     .replace(/[۰-۹]/g, (d) => String(d.charCodeAt(0) - 0x06f0));
 
+/**
+ * E.164 back to the local form people actually type: +9647504843513 → 07504843513.
+ *
+ * The OTP endpoints speak E.164, but the registration form validates the way
+ * the app does — 11 digits starting 07 — so handing its own normalised number
+ * straight back would fail that check on a number we just texted successfully.
+ * Anything that isn't an Iraqi number comes back digits-only and unchanged.
+ */
+export const toLocalPhone = (value) => {
+  const digits = normalizeDigits(value).replace(/\D/g, "");
+  if (!digits) return "";
+
+  const national = digits.startsWith("964") ? digits.slice(3) : digits;
+
+  return national.startsWith("0") ? national : `0${national}`;
+};
+
 export const previewPromo = (token, planId, code) =>
   request(`/subscription-plans/${planId}/apply-promo/${encodeURIComponent(code)}`, { token });
 

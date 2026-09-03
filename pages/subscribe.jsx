@@ -29,6 +29,7 @@ import {
   getPlans,
   getPrograms,
   normalizeDigits,
+  toLocalPhone,
   paySubscription,
   checkProgramPayment,
   previewPromo,
@@ -197,11 +198,11 @@ export default function Subscribe() {
         message.error(t(errorKey(res.data)));
         return;
       }
-      if (res.data?.isNewUser) {
-        // onboarding lives in the app; the checkout only serves existing accounts
-        message.warning(t("newUser"), 8);
-        return;
-      }
+      // isNewUser is a hint, not a gate: verify mints a usable custom token
+      // either way. Signing in regardless lets enterWithUser find no profile
+      // and open the same registration form Google sign-ups already get —
+      // turning away a student who just proved they own the number, and
+      // telling them to go install the app, lost the sale outright.
       const cred = await window.firebase
         .auth()
         .signInWithCustomToken(res.data.customToken);
@@ -219,33 +220,56 @@ export default function Subscribe() {
   const enterWithUser = async (user) => {
     if (enteredRef.current) return;
     enteredRef.current = true;
-    const idToken = await user.getIdToken();
 
-    // a brand-new identity (any provider) has no Pepu profile yet —
-    // onboard right here with the same PUT /users/me the app uses
+    // Everything here can stall in the app's in-app browser — getIdToken hits
+    // Firebase, getMe hits our API, and an embedded webview drops connections
+    // a real browser keeps. Any stall used to leave the spinner on forever and
+    // the login buttons dead, because the restore never finished OR failed. A
+    // hard ceiling turns "hang" into "fall back to the login screen".
     try {
-      const meRes = await getMe(idToken);
-      if (meRes.status === 404) {
-        pendingToken.current = idToken;
-        setRegPhone(normalizedPhone || "");
-        const citiesRes = await getCities(idToken);
-        const cityList = citiesRes.data?.items ?? citiesRes.data ?? [];
-        setCities(Array.isArray(cityList) ? cityList : []);
-        setRegistering(true);
-        return;
-      }
-      if (!meRes.ok) {
-        enteredRef.current = false;
-        message.error(t("genericError"));
-        return;
-      }
+      const restore = (async () => {
+        const idToken = await user.getIdToken();
 
-      setMe(meRes.data);
-      setToken(idToken);
-      if (!(await loadCatalog(idToken))) {
-        return;
+        // a brand-new identity (any provider) has no Pepu profile yet —
+        // onboard right here with the same PUT /users/me the app uses
+        const meRes = await getMe(idToken);
+        if (meRes.status === 404) {
+          pendingToken.current = idToken;
+          // the OTP flow holds E.164; the form below validates 07-prefixed
+          // local numbers, so hand it back in the shape it accepts
+          setRegPhone(toLocalPhone(normalizedPhone));
+          const citiesRes = await getCities(idToken);
+          const cityList = citiesRes.data?.items ?? citiesRes.data ?? [];
+          setCities(Array.isArray(cityList) ? cityList : []);
+          setRegistering(true);
+          return;
+        }
+        if (!meRes.ok) {
+          throw new Error("getMe failed");
+        }
+
+        setMe(meRes.data);
+        setToken(idToken);
+        if (!(await loadCatalog(idToken))) {
+          throw new Error("catalog failed");
+        }
+        setStep(2);
+      })();
+
+      await Promise.race([
+        restore,
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("restore_timeout")), 12000)),
+      ]);
+    } catch (err) {
+      // Release the latch so the login buttons come back and the visitor can
+      // sign in manually instead of staring at a dead page.
+      enteredRef.current = false;
+      if (String(err?.message).includes("timeout")) {
+        message.warning(t("restoreTimedOut"));
+      } else {
+        message.error(t("genericError"));
       }
-      setStep(2);
     } finally {
       setRestoring(false);
     }
