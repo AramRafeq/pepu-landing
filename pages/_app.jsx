@@ -22,6 +22,21 @@ function App({ Component, pageProps }) {
   }, [isWindowAvailable, lang]);
   return (
     <>
+      {/* Microsoft Clarity — session recordings & heatmaps. afterInteractive
+          rather than lazyOnload so the recording starts before the visitor
+          begins interacting; the whole point is watching /subscribe sessions
+          from their first moment. */}
+      <Script
+        strategy="afterInteractive"
+        id="ms-clarity"
+        dangerouslySetInnerHTML={{
+          __html: `(function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ycet54o0sd");`,
+        }}
+      />
       <Script
         strategy="lazyOnload"
         id="google-analytics"

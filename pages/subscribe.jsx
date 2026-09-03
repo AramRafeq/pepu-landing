@@ -88,6 +88,17 @@ export default function Subscribe() {
   };
 
   useEffect(() => {
+    // Mark this session for Clarity: "flow=subscribe" makes these sessions
+    // filterable in the dashboard, and upgrade() tells Clarity to keep the
+    // full recording even under sampling — the checkout is exactly the flow
+    // worth watching end to end.
+    if (typeof window !== "undefined" && typeof window.clarity === "function") {
+      window.clarity("set", "flow", "subscribe");
+      window.clarity("upgrade", "subscribe-flow");
+    }
+  }, []);
+
+  useEffect(() => {
     bootFirebase();
     // belt-and-braces: if script events are missed entirely, poll briefly
     const timer = setInterval(() => {
