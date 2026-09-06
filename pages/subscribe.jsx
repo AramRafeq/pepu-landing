@@ -28,6 +28,7 @@ import {
   getMySubscriptions,
   getPlans,
   getPrograms,
+  apiErrorCode,
   normalizeDigits,
   toLocalPhone,
   paySubscription,
@@ -166,6 +167,25 @@ export default function Subscribe() {
       code_not_found: "codeExpired",
       too_many_attempts: "tooManyAttempts",
     }[data?.error] || "genericError");
+
+  /// Turns a rejected registration into something the student can act on.
+  ///
+  /// The most common rejection is a number that already belongs to an account:
+  /// students who first signed up with Google or Apple in the app still own
+  /// their phone number, so signing in here by OTP creates a second identity
+  /// and the profile they try to create collides with the account they already
+  /// have. Telling them "something went wrong" left them retrying the same
+  /// form; telling them which door to use gets them in.
+  const registrationErrorText = (res) => {
+    const { code } = apiErrorCode(res.data);
+
+    if (code === "duplicate_phone_number") return t("phoneAlreadyRegistered");
+    if (res.status === 401 || res.status === 403) return t("sessionExpired");
+    if (res.status >= 500) return t("serverError");
+
+    // An unmapped validation code is still better shown than swallowed.
+    return code ? t("genericErrorWithCode", { code }) : t("genericError");
+  };
 
   // ---- step 0 → 1: request the OTP ----
   const sendCode = async () => {
@@ -353,7 +373,7 @@ export default function Subscribe() {
         phoneNumber: cleanPhone,
       });
       if (!res.ok) {
-        message.error(t("genericError"));
+        message.error(registrationErrorText(res), 8);
         return;
       }
 
@@ -399,7 +419,12 @@ export default function Subscribe() {
     setPromoBusy(true);
     try {
       const res = await previewPromo(token, plan.id, promo.trim());
-      if (!res.ok) {
+      // A rejected code still comes back 200 — the endpoint has no error path,
+      // and BillingEngine returns a result whose every amount is left at its
+      // default 0. Trusting `ok` alone showed "applied, you pay 0 IQD" for an
+      // expired code, then the server refused the same code at pay time.
+      // `status` is the discriminator.
+      if (!res.ok || res.data?.status !== "success") {
         setPromoResult(null);
         message.error(t("promoInvalid"));
         return;
@@ -408,6 +433,11 @@ export default function Subscribe() {
       message.success(
         t("promoApplied", { amount: fmt(res.data?.paidAmount ?? 0) })
       );
+    } catch {
+      // try/finally with no catch left a network failure as an unhandled
+      // rejection: the button stopped spinning and said nothing at all
+      setPromoResult(null);
+      message.error(t("genericError"));
     } finally {
       setPromoBusy(false);
     }
@@ -437,8 +467,13 @@ export default function Subscribe() {
         message.error(t("genericError"));
         return;
       }
-      if (payRes.data?.state === "completed") {
-        // a full-discount promo settles without FIB ever opening
+      // `transactionState`, not `state` — PaySubscriptionResponse is the one
+      // payment DTO that names it that way, and reading the wrong key made
+      // this branch dead: a full-discount promo settles server-side (the
+      // subscription is activated and the purchase notification sent) while
+      // the page fell through and reported a generic failure. The mobile app
+      // reads transactionState and was never affected.
+      if (payRes.data?.transactionState === "completed") {
         setStep(4);
         return;
       }

@@ -76,5 +76,9 @@
   "myPrograms": "My purchased programs",
   "programPaid": "Program purchased 🎉 — find it in the Pepu app's video marketplace",
   "plansTab": "Packages",
-  "restoreTimedOut": "Couldn't load your account — please sign in again"
+  "restoreTimedOut": "Couldn't load your account — please sign in again",
+  "phoneAlreadyRegistered": "This number already belongs to an account. Sign in with Google or Apple instead — your existing account has this same number.",
+  "sessionExpired": "Your sign-in expired. Please sign in with your number again.",
+  "serverError": "Something broke on our side. Try again in a few minutes — or message us.",
+  "genericErrorWithCode": "Something went wrong ({{code}}). If it keeps happening, message us."
 }

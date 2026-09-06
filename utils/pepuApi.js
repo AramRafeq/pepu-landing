@@ -29,6 +29,31 @@ async function request(path, { method = "GET", token, body, idempotencyKey } = {
   return { ok: res.ok, status: res.status, data };
 }
 
+/**
+ * First machine-readable error code out of an ASP.NET ValidationProblem.
+ *
+ * The API answers a rejected registration with
+ * `{ errors: { phoneNumber: ["duplicate_phone_number"] } }` — camelCase on the
+ * wire, lower-cased twice over by CustomProblemDetailsFactory and by the
+ * serializer's DictionaryKeyPolicy, whatever casing the C# used. The checkout used
+ * to ignore all of it and say "something went wrong", which is how a student
+ * whose number was already on an account had no idea what to do — see
+ * `submitRegistration` in pages/subscribe.jsx.
+ *
+ * Returns `{ code, field }`, both null when the body carries no validation
+ * errors (a 401 or a 500, say).
+ */
+export const apiErrorCode = (data) => {
+  const errors = data?.errors;
+  if (!errors || typeof errors !== "object") return { code: null, field: null };
+
+  for (const [field, messages] of Object.entries(errors)) {
+    const code = Array.isArray(messages) ? messages[0] : messages;
+    if (code) return { code: String(code), field: String(field).toLowerCase() };
+  }
+  return { code: null, field: null };
+};
+
 export const requestOtp = (phoneNumber) =>
   request("/auth/phone/request", { method: "POST", body: { phoneNumber } });
 
