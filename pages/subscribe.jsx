@@ -135,6 +135,7 @@ export default function Subscribe() {
   const [fibTarget, setFibTarget] = useState(null);
   const [programs, setPrograms] = useState([]);
   const [buyingProgramId, setBuyingProgramId] = useState(null);
+  const [shopTab, setShopTab] = useState("plans");
   const idempotencyKey = useRef(null);
 
   const [me, setMe] = useState(null);
@@ -339,6 +340,7 @@ export default function Subscribe() {
     setFibTarget(null);
     setPrograms([]);
     setBuyingProgramId(null);
+    setShopTab("plans");
     setRegistering(false);
     setPhone("");
     setCode("");
@@ -567,6 +569,11 @@ export default function Subscribe() {
       : `data:image/png;base64,${fib.qrCode}`;
   }, [fib]);
 
+  // The pay button used to live under the last plan card, below the fold on
+  // a phone — Clarity caught a student picking a plan and leaving without
+  // ever seeing it. Once a plan is picked it rides pinned to the bottom.
+  const showPayBar = step === 2 && !registering && !!plan && shopTab === "plans";
+
   return (
     <ConfigProvider
       direction={dir}
@@ -594,7 +601,14 @@ export default function Subscribe() {
         onReady={bootFirebase}
       />
 
-      <div style={{ maxWidth: 560, margin: "0 auto", padding: "32px 16px", width: "100%" }}>
+      <div style={{
+        maxWidth: 560,
+        margin: "0 auto",
+        padding: "32px 16px",
+        // room for the pinned pay bar so it never covers the last card
+        paddingBottom: showPayBar ? "calc(140px + env(safe-area-inset-bottom))" : 32,
+        width: "100%",
+      }}>
         <div style={{ textAlign: "center", marginBottom: 24 }}>
           <img src="/assets/papu.svg" alt="Pepu" style={{ height: 56 }}
                onError={(e) => (e.currentTarget.style.display = "none")} />
@@ -852,6 +866,8 @@ export default function Subscribe() {
 
               <Tabs
                 centered
+                activeKey={shopTab}
+                onChange={setShopTab}
                 items={[
                   {
                     key: "plans",
@@ -915,22 +931,6 @@ export default function Subscribe() {
                                 {t("promoApply")}
                               </Button>
                             </Space.Compact>
-                            <div style={{ marginTop: 16, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                              <Text strong>{t("payAmount")}</Text>
-                              <Text strong style={{ fontSize: 20, color: PURPLE }}>
-                                {fmt(amountDue)} {t("iqd")}
-                              </Text>
-                            </div>
-                            <Button
-                              type="primary"
-                              size="large"
-                              block
-                              loading={busy}
-                              onClick={pay}
-                              style={{ marginTop: 12, background: "#13877C" }}
-                            >
-                              {t("payWithFib")}
-                            </Button>
                           </Card>
                         )}
                       </Space>
@@ -1054,6 +1054,45 @@ export default function Subscribe() {
           </Card>
         )}
       </div>
+
+      {showPayBar && (
+        <div
+          style={{
+            position: "fixed",
+            insetInline: 0,
+            bottom: 0,
+            zIndex: 100,
+            background: "#fff",
+            borderTop: "1px solid #eee",
+            boxShadow: "0 -4px 16px rgba(0,0,0,0.08)",
+            padding: "12px 16px calc(12px + env(safe-area-inset-bottom))",
+          }}
+        >
+          <div style={{ maxWidth: 528, margin: "0 auto" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
+              <div style={{ minWidth: 0 }}>
+                <Text type="secondary" style={{ fontSize: 13 }}>{t("payAmount")}</Text>
+                <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  <Text strong style={{ fontSize: 13 }}>{plan.nameKurdish}</Text>
+                </div>
+              </div>
+              <Text strong style={{ fontSize: 20, color: PURPLE, flex: "none" }}>
+                {fmt(amountDue)} {t("iqd")}
+              </Text>
+            </div>
+            <Button
+              type="primary"
+              size="large"
+              block
+              loading={busy}
+              onClick={pay}
+              style={{ marginTop: 10, background: "#13877C" }}
+            >
+              {t("payWithFib")}
+            </Button>
+          </div>
+        </div>
+      )}
     </Layout>
     </ConfigProvider>
   );
