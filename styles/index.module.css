@@ -57,6 +57,41 @@
   line-height: 1;
 }
 
+/* On a phone the brand, language and the long Kurdish CTA don't fit on one
+   line; the row overflowed and the whole page gained a horizontal scroll.
+   Drop the language name (the globe stays) and let the CTA shrink and wrap. */
+@media (max-width: 480px) {
+  .header {
+    gap: 10px;
+    padding-inline: 16px;
+  }
+
+  .brand {
+    flex: none;
+  }
+
+  .headerActions {
+    min-width: 0;
+    gap: 4px;
+  }
+
+  .langLabel {
+    display: none;
+  }
+
+  .headerCta {
+    min-width: 0;
+    height: auto;
+    min-height: 40px;
+    padding: 6px 14px;
+    white-space: normal;
+    text-wrap: balance;
+    text-align: center;
+    line-height: 1.3;
+    font-size: 13px;
+  }
+}
+
 /* ---------- hero ---------- */
 .page {
   background: #fff;

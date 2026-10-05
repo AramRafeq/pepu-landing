@@ -2,6 +2,18 @@
 import Script from 'next/script';
 import React from 'react';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
+
+const HANDOFF_STASH = `(function () {
+  try {
+    if (location.hash.indexOf('handoff=') < 0) return;
+    var params = new URLSearchParams(location.hash.slice(1));
+    var code = params.get('handoff');
+    params.delete('handoff');
+    var rest = params.toString();
+    history.replaceState(history.state, '', location.pathname + location.search + (rest ? '#' + rest : ''));
+    if (code) window.__pepuHandoff = code;
+  } catch (e) {}
+})();`;
 class PepuDocument extends Document {
     static async getInitialProps(ctx) {
         const initialProps = await Document.getInitialProps(ctx);
@@ -23,6 +35,12 @@ class PepuDocument extends Document {
         return (
             <Html lang={locale} dir="rtl">
                 <Head>
+                    {/* Must stay first: the app's checkout ad links to
+                        /subscribe#handoff=<one-time sign-in code>. Lift it out
+                        of the URL before analytics (GA, Clarity) or Next's
+                        router can read it; subscribe.jsx redeems it from
+                        window.__pepuHandoff. */}
+                    <script dangerouslySetInnerHTML={{ __html: HANDOFF_STASH }} />
                     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
                     <meta name="title" content="پەپوو | هاوڕێی خوێندنت" />
                     <meta name="keywords" content="poli12, poli 12, wizary, nishtmani 2022, pepu, papu, pepu.krd, papu.krd, خوێندن, پۆلی شەش, پۆلی ١٢, تاقیکردنەوەی ویزاری," />

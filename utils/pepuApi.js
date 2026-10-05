@@ -60,6 +60,11 @@ export const requestOtp = (phoneNumber) =>
 export const verifyOtp = (phoneNumber, code) =>
   request("/auth/phone/verify", { method: "POST", body: { phoneNumber, code } });
 
+/** Trades the one-time `?handoff=` code the app's checkout ad appends for a
+ * Firebase custom token, so students arriving from the app skip the SMS. */
+export const redeemHandoff = (code) =>
+  request("/auth/handoff/redeem", { method: "POST", body: { code } });
+
 /** 200 = existing account, 404 = never onboarded (offer registration). */
 export const getMe = (token) => request("/users/me", { token });
 
