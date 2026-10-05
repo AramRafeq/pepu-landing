@@ -38,6 +38,7 @@ import {
   registerProfile,
   requestOtp,
   verifyOtp,
+  redeemHandoff,
 } from "~/utils/pepuApi";
 
 const { Title, Text, Paragraph } = Typography;
@@ -58,6 +59,31 @@ const FIREBASE_CONFIG = {
 };
 
 const PURPLE = "#9241FE";
+
+/**
+ * The app's checkout ad lands here with a one-time sign-in code. The inline
+ * script in _document has already lifted it out of the URL, before any
+ * analytics could record it, into `window.__pepuHandoff`. It is redeemed at
+ * once rather than when Firebase is ready, and abandoned after
+ * HANDOFF_WAIT_MS so a late answer can't switch accounts under a page that has
+ * moved on.
+ */
+const HANDOFF_WAIT_MS = 8000;
+let handoff = null; // { token: Promise<string|null>, deadline: number, used: boolean }
+
+const startHandoff = () => {
+  if (handoff || typeof window === "undefined" || !window.__pepuHandoff) return handoff;
+  const code = window.__pepuHandoff;
+  delete window.__pepuHandoff;
+  handoff = {
+    deadline: Date.now() + HANDOFF_WAIT_MS,
+    used: false,
+    token: redeemHandoff(code)
+      .then((res) => (res.ok && res.data?.customToken) || null)
+      .catch(() => null),
+  };
+  return handoff;
+};
 
 export default function Subscribe() {
   const { t, lang } = useTranslation("subscribe");
@@ -80,12 +106,57 @@ export default function Subscribe() {
     setFbReady(true);
     // Firebase persists the session in localStorage; on refresh this fires
     // with the surviving user and we re-enter without asking anything
-    window.firebase.auth().onAuthStateChanged((user) => {
-      if (!user) {
-        setRestoring(false);
+    const listen = () =>
+      window.firebase.auth().onAuthStateChanged((user) => {
+        if (!user) {
+          setRestoring(false);
+          return;
+        }
+        enterWithUser(user);
+      });
+
+    // Arriving from the app's checkout ad: sign in with the handoff BEFORE
+    // listening, so a different account left over in this browser can't win
+    // the race. Any failure just falls through to the session/login we'd
+    // show anyway.
+    const pending = startHandoff();
+    if (!pending || pending.used) {
+      listen();
+      return;
+    }
+    pending.used = true;
+
+    let settled = false;
+    const giveUp = () => {
+      if (settled) return;
+      settled = true;
+      listen();
+    };
+    // capped like enterWithUser: a stalled request must not hold the spinner
+    const timer = setTimeout(giveUp, Math.max(0, pending.deadline - Date.now()));
+
+    pending.token.then((customToken) => {
+      // Too late: the page has already entered with whatever was there, and
+      // switching accounts under it would show one student and pay as another.
+      if (settled) return;
+      if (!customToken) {
+        clearTimeout(timer);
+        giveUp();
         return;
       }
-      enterWithUser(user);
+      window.firebase
+        .auth()
+        .signInWithCustomToken(customToken)
+        .then(() => {
+          // Landed after the timeout: Firebase now holds the app account but
+          // the page entered another, so start over as the account Firebase has.
+          if (settled) window.location.reload();
+        })
+        .catch(() => {})
+        .finally(() => {
+          clearTimeout(timer);
+          giveUp();
+        });
     });
   };
 
@@ -101,6 +172,8 @@ export default function Subscribe() {
   }, []);
 
   useEffect(() => {
+    // redeem now, in parallel with the Firebase CDN download
+    startHandoff();
     bootFirebase();
     // belt-and-braces: if script events are missed entirely, poll briefly
     const timer = setInterval(() => {

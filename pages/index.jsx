@@ -97,9 +97,9 @@ export default function Home() {
               onClick: (e) => handleLanguageChange(e.key),
             }}
           >
-            <Button type="text" className={Style.langButton}>
+            <Button type="text" className={Style.langButton} aria-label={currentLanguage}>
               <Space size={6}>
-                {currentLanguage}
+                <span className={Style.langLabel}>{currentLanguage}</span>
                 <GlobalOutlined />
               </Space>
             </Button>
