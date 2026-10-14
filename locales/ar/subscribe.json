@@ -88,5 +88,6 @@
   "creditsPaid": "تمت إضافة الرصيد!",
   "creditsClaimFree": "استلام مجاني",
   "creditsFreeClaimed": "تم الاستلام",
-  "creditsUnit": "رصيد"
+  "creditsUnit": "رصيد",
+  "creditsFree": "مجاني"
 }

@@ -215,6 +215,8 @@ export default function Subscribe() {
   const [packs, setPacks] = useState([]);
   const [credits, setCredits] = useState(0);
   const [buyingPackId, setBuyingPackId] = useState(null);
+  // the credit pack picked on the credits tab (paid from the same bar as plans)
+  const [pack, setPack] = useState(null);
   const [shopTab, setShopTab] = useState("plans");
   const idempotencyKey = useRef(null);
 
@@ -408,6 +410,9 @@ export default function Subscribe() {
       setCredits(packsRes.data?.balance ?? 0);
     } catch { /* tab stays hidden */ }
     setPacks(packList);
+    // a picked pack that's gone or already claimed is unpicked
+    setPack((picked) => (picked && packList.some((x) => x.id === picked.id && !x.claimed)
+      ? packList.find((x) => x.id === picked.id) : null));
     // a tab that has nothing to show any more falls back to the plans
     if (packList.length === 0) setShopTab((tab) => (tab === "credits" ? "plans" : tab));
     return true;
@@ -434,6 +439,7 @@ export default function Subscribe() {
     setPacks([]);
     setCredits(0);
     setBuyingPackId(null);
+    setPack(null);
     setShopTab("plans");
     setRegistering(false);
     setPhone("");
@@ -699,7 +705,10 @@ export default function Subscribe() {
   // The pay button used to live under the last plan card, below the fold on
   // a phone — Clarity caught a student picking a plan and leaving without
   // ever seeing it. Once a plan is picked it rides pinned to the bottom.
-  const showPayBar = step === 2 && !registering && !!plan && shopTab === "plans";
+  // one pay bar for both tabs: the picked plan, or the picked credit pack
+  const payingPack = shopTab === "credits" && !!pack;
+  const showPayBar = step === 2 && !registering &&
+    ((shopTab === "plans" && !!plan) || payingPack);
 
   return (
     <ConfigProvider
@@ -1113,36 +1122,35 @@ export default function Subscribe() {
                       <Space direction="vertical" style={{ width: "100%" }} size={12}>
                         <Text type="secondary">{t("creditsExplain")}</Text>
                         <Text>{t("creditsBalance")}: <Text strong>{fmt(credits)}</Text></Text>
-                        {packs.map((pack) => (
-                          <Card key={pack.id} size="small">
-                            <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                              <div style={{ flex: 1, minWidth: 0 }}>
-                                <Text strong>{pack.name}</Text>
-                                <div>
-                                  <Text style={{ color: "#9241FE", fontWeight: 700 }}>
-                                    {fmt(pack.credits)} {t("creditsUnit")}
-                                  </Text>
-                                  <Text type="secondary" style={{ fontSize: 12 }}> · {t("creditsNeverExpire")}</Text>
-                                </div>
-                              </div>
-                              {pack.claimed ? (
-                                <Tag style={{ margin: 0 }}>{t("creditsFreeClaimed")}</Tag>
-                              ) : (
-                                <Button
-                                  type="primary"
-                                  size="small"
-                                  loading={buyingPackId === pack.id}
-                                  onClick={() => buyPack(pack)}
-                                  style={{ background: "#9241FE", borderColor: "#9241FE", flex: "none" }}
-                                >
-                                  {(pack.price ?? 0) <= 0
-                                    ? t("creditsClaimFree")
-                                    : `${t("buyProgram")} · ${fmt(pack.price)} ${t("iqd")}`}
-                                </Button>
-                              )}
-                            </div>
-                          </Card>
-                        ))}
+                        {packs.map((p) => {
+                          const selected = pack?.id === p.id;
+                          const free = (p.price ?? 0) <= 0;
+                          return (
+                            <Card
+                              key={p.id}
+                              hoverable={!p.claimed}
+                              onClick={() => { if (!p.claimed) setPack(p); }}
+                              style={{
+                                borderColor: selected ? PURPLE : undefined,
+                                borderWidth: selected ? 2 : 1,
+                                opacity: p.claimed ? 0.6 : 1,
+                              }}
+                            >
+                              <Space direction="vertical" size={4} style={{ width: "100%" }}>
+                                <Space wrap>
+                                  <Text strong style={{ fontSize: 16 }}>{p.name}</Text>
+                                  {p.claimed && <Tag>{t("creditsFreeClaimed")}</Tag>}
+                                </Space>
+                                <Text type="secondary">
+                                  {fmt(p.credits)} {t("creditsUnit")} · {t("creditsNeverExpire")}
+                                </Text>
+                                <Text strong style={{ color: PURPLE, fontSize: 18 }}>
+                                  {free ? t("creditsFree") : `${fmt(p.price)} ${t("iqd")}`}
+                                </Text>
+                              </Space>
+                            </Card>
+                          );
+                        })}
                       </Space>
                     ),
                   }] : []),
@@ -1240,22 +1248,24 @@ export default function Subscribe() {
               <div style={{ minWidth: 0 }}>
                 <Text type="secondary" style={{ fontSize: 13 }}>{t("payAmount")}</Text>
                 <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  <Text strong style={{ fontSize: 13 }}>{plan.nameKurdish}</Text>
+                  <Text strong style={{ fontSize: 13 }}>{payingPack ? pack.name : plan.nameKurdish}</Text>
                 </div>
               </div>
               <Text strong style={{ fontSize: 20, color: PURPLE, flex: "none" }}>
-                {fmt(amountDue)} {t("iqd")}
+                {payingPack && (pack.price ?? 0) <= 0
+                  ? t("creditsFree")
+                  : `${fmt(payingPack ? pack.price : amountDue)} ${t("iqd")}`}
               </Text>
             </div>
             <Button
               type="primary"
               size="large"
               block
-              loading={busy}
-              onClick={pay}
-              style={{ marginTop: 10, background: "#13877C" }}
+              loading={payingPack ? buyingPackId === pack.id : busy}
+              onClick={payingPack ? () => buyPack(pack) : pay}
+              style={{ marginTop: 10, background: payingPack && (pack.price ?? 0) <= 0 ? PURPLE : "#13877C" }}
             >
-              {t("payWithFib")}
+              {payingPack && (pack.price ?? 0) <= 0 ? t("creditsClaimFree") : t("payWithFib")}
             </Button>
           </div>
         </div>

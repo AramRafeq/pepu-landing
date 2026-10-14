@@ -88,5 +88,6 @@
   "creditsPaid": "Credits added!",
   "creditsClaimFree": "Claim free",
   "creditsFreeClaimed": "Claimed",
-  "creditsUnit": "credits"
+  "creditsUnit": "credits",
+  "creditsFree": "Free"
 }
