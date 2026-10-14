@@ -144,5 +144,16 @@ export const purchaseProgram = (token, programId) =>
 export const checkProgramPayment = (token, programId) =>
   request(`/fib/check-program/${programId}`, { method: "POST", token });
 
+/** Companion credit packs and the student's balance: {packs:[{id,name,credits,price,claimed}], balance}. */
+export const getCreditPacks = (token) => request("/study/credits", { token });
+
+/** Opens a FIB payment for a pack: {state, fib:{…}}. */
+export const purchaseCreditPack = (token, packId) =>
+  request(`/study/credits/${packId}/purchase`, { method: "POST", token });
+
+/** 200 once FIB confirms and the credits are added. */
+export const checkCreditPackPayment = (token, packId) =>
+  request(`/fib/check-pack/${packId}`, { method: "POST", token });
+
 export const cancelFibPayment = (token, subscriptionId) =>
   request(`/fib/cancel/${subscriptionId}`, { method: "POST", token });
