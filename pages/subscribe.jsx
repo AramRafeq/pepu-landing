@@ -28,6 +28,9 @@ import {
   getMySubscriptions,
   getPlans,
   getPrograms,
+  getCreditPacks,
+  purchaseCreditPack,
+  checkCreditPackPayment,
   apiErrorCode,
   normalizeDigits,
   toLocalPhone,
@@ -204,10 +207,14 @@ export default function Subscribe() {
   const [promoBusy, setPromoBusy] = useState(false);
   const [subscriptionId, setSubscriptionId] = useState(null);
   const [fib, setFib] = useState(null);
-  // what the open FIB payment is for: {kind:"subscription"|"program", id}
+  // what the open FIB payment is for: {kind:"subscription"|"program"|"pack", id}
   const [fibTarget, setFibTarget] = useState(null);
   const [programs, setPrograms] = useState([]);
   const [buyingProgramId, setBuyingProgramId] = useState(null);
+  // companion credit packs, sold apart from the course plans
+  const [packs, setPacks] = useState([]);
+  const [credits, setCredits] = useState(0);
+  const [buyingPackId, setBuyingPackId] = useState(null);
   const [shopTab, setShopTab] = useState("plans");
   const idempotencyKey = useRef(null);
 
@@ -392,6 +399,17 @@ export default function Subscribe() {
     const programsRes = await getPrograms(idToken);
     const programList = programsRes.data?.items ?? [];
     setPrograms(Array.isArray(programList) ? programList : []);
+
+    // companion credits are extra: if they can't load (older API, a blip), the shop still works without them
+    let packList = [];
+    try {
+      const packsRes = await getCreditPacks(idToken);
+      packList = Array.isArray(packsRes.data?.packs) ? packsRes.data.packs : [];
+      setCredits(packsRes.data?.balance ?? 0);
+    } catch { /* tab stays hidden */ }
+    setPacks(packList);
+    // a tab that has nothing to show any more falls back to the plans
+    if (packList.length === 0) setShopTab((tab) => (tab === "credits" ? "plans" : tab));
     return true;
   };
 
@@ -413,6 +431,9 @@ export default function Subscribe() {
     setFibTarget(null);
     setPrograms([]);
     setBuyingProgramId(null);
+    setPacks([]);
+    setCredits(0);
+    setBuyingPackId(null);
     setShopTab("plans");
     setRegistering(false);
     setPhone("");
@@ -596,12 +617,45 @@ export default function Subscribe() {
     }
   };
 
+  // ---- companion credit pack (same FIB panel, its own check) ----
+  const buyPack = async (pack) => {
+    if (buyingPackId) return;
+    setBuyingPackId(pack.id);
+    try {
+      const res = await purchaseCreditPack(token, pack.id);
+      // a free pack is claimed at once, once per student
+      if (res.ok && res.data?.state === "completed") {
+        message.success(t("creditsPaid"));
+        await loadCatalog(token);
+        return;
+      }
+      if (!res.ok && JSON.stringify(res.data?.errors ?? "").includes("already_owned")) {
+        message.info(t("creditsFreeClaimed"));
+        await loadCatalog(token);
+        return;
+      }
+      if (res.ok && res.data?.fib) {
+        setFib(res.data.fib);
+        setFibTarget({ kind: "pack", id: pack.id });
+        setStep(3);
+      } else {
+        message.error(t("genericError"));
+      }
+    } catch {
+      message.error(t("genericError"));
+    } finally {
+      setBuyingPackId(null);
+    }
+  };
+
   // ---- step 3: poll until FIB confirms ----
   const checkPayment = useCallback(async () => {
     if (!fibTarget || !token) return false;
     const res = fibTarget.kind === "program"
       ? await checkProgramPayment(token, fibTarget.id)
-      : await checkFibPayment(token, fibTarget.id);
+      : fibTarget.kind === "pack"
+        ? await checkCreditPackPayment(token, fibTarget.id)
+        : await checkFibPayment(token, fibTarget.id);
     if (res.ok) {
       setStep(4);
       return true;
@@ -620,7 +674,7 @@ export default function Subscribe() {
       await cancelFibPayment(token, subscriptionId);
     }
 
-    // programs have no cancel endpoint — the FIB payment just expires
+    // programs and packs have no cancel endpoint — the FIB payment just expires
     setFib(null);
     setFibTarget(null);
     setStep(2);
@@ -1052,6 +1106,46 @@ export default function Subscribe() {
                       </Space>
                     ),
                   }] : []),
+                  ...(packs.length > 0 ? [{
+                    key: "credits",
+                    label: t("creditsTitle"),
+                    children: (
+                      <Space direction="vertical" style={{ width: "100%" }} size={12}>
+                        <Text type="secondary">{t("creditsExplain")}</Text>
+                        <Text>{t("creditsBalance")}: <Text strong>{fmt(credits)}</Text></Text>
+                        {packs.map((pack) => (
+                          <Card key={pack.id} size="small">
+                            <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <Text strong>{pack.name}</Text>
+                                <div>
+                                  <Text style={{ color: "#9241FE", fontWeight: 700 }}>
+                                    {fmt(pack.credits)} {t("creditsUnit")}
+                                  </Text>
+                                  <Text type="secondary" style={{ fontSize: 12 }}> · {t("creditsNeverExpire")}</Text>
+                                </div>
+                              </div>
+                              {pack.claimed ? (
+                                <Tag style={{ margin: 0 }}>{t("creditsFreeClaimed")}</Tag>
+                              ) : (
+                                <Button
+                                  type="primary"
+                                  size="small"
+                                  loading={buyingPackId === pack.id}
+                                  onClick={() => buyPack(pack)}
+                                  style={{ background: "#9241FE", borderColor: "#9241FE", flex: "none" }}
+                                >
+                                  {(pack.price ?? 0) <= 0
+                                    ? t("creditsClaimFree")
+                                    : `${t("buyProgram")} · ${fmt(pack.price)} ${t("iqd")}`}
+                                </Button>
+                              )}
+                            </div>
+                          </Card>
+                        ))}
+                      </Space>
+                    ),
+                  }] : []),
                 ]}
               />
             </Space>
@@ -1103,7 +1197,7 @@ export default function Subscribe() {
         {step === 4 && (
           <Result
             status="success"
-            title={fibTarget?.kind === "program" ? t("programPaid") : t("paid")}
+            title={fibTarget?.kind === "program" ? t("programPaid") : fibTarget?.kind === "pack" ? t("creditsPaid") : t("paid")}
             subTitle={t("paidHint")}
           />
         )}
