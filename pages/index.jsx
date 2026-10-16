@@ -165,12 +165,15 @@ export default function Home() {
                 <span className={H.langText}>{currentLanguage}</span>
               </button>
             </Dropdown>
-            <a href="/subscribe" className={H.topCta}>{t("subscribeCta")}</a>
+            <a href="/subscribe" className={H.topCta}>
+              <span className={H.ctaLong}>{t("subscribeCta")}</span>
+              <span className={H.ctaShort}>{t("home.subscribeShort")}</span>
+            </a>
           </div>
         </div>
       </header>
 
-      <main className={Style.page}>
+      <main className={`${Style.page} ${H.clip}`}>
         {/* ---- hero: big headline, waving Pepu on a morphing blob, stickers ---- */}
         <section className={H.hero}>
           <div className={H.heroInner}>

@@ -90,7 +90,7 @@
   "home": {
     "hi": "Hi! 👋",
     "kicker": "Your study buddy",
-    "title": "Studying is way more fun with Pepu",
+    "title": "Studying is easier with Pepu",
     "titleAccent": "Pepu",
     "sub": "Take exams, find the gaps in what you know, understand lessons better and get higher grades — ministry questions, Pepu's smart tutor, flashcards and a focus room, all in one app.",
     "featuresTitle": "What does Pepu do?",
@@ -113,7 +113,8 @@
     "f_streak_title": "Streaks & badges",
     "f_streak_text": "Study every day, grow your streak and unlock new badges.",
     "f_friends_title": "Friends & chat",
-    "f_friends_text": "Add your friends, share questions and study together."
+    "f_friends_text": "Add your friends, share questions and study together.",
+    "subscribeShort": "Subscribe"
   },
   "faq2": {
     "title": "Frequently asked questions",

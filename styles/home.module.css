@@ -1,6 +1,16 @@
 /* Playful home sections: new Pepu art, stickers, ticker, tilt cards.
    Everything moving respects prefers-reduced-motion at the bottom. */
 
+/* No sideways scroll: the tilted ticker pokes past the edges. `clip` (not
+   hidden) so the sticky header keeps working. */
+.clip {
+  overflow-x: clip;
+}
+
+.ctaShort {
+  display: none;
+}
+
 /* ---- header: floating pill bar ---- */
 .topbar {
   position: sticky;
@@ -98,7 +108,10 @@
 @media (max-width: 560px) {
   .langText { display: none; }
   .langPill { padding: 0 11px; }
-  .topCta { font-size: 13px; padding: 0 12px; }
+  .topCta { font-size: 14px; padding: 0 14px; }
+  .ctaLong { display: none; }
+  .ctaShort { display: inline; }
+  .topbarInner { padding: 6px 8px 6px 10px; box-shadow: 3px 3px 0 #1d1530; }
   .logo { font-size: 20px; }
   .logo img { height: 34px; }
 }
@@ -480,15 +493,28 @@
 }
 
 .wide {
-  grid-column: span 2;
+  grid-column: 1 / -1;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
   gap: 18px;
+  min-height: 0;
+  padding: 26px 40px;
   padding-bottom: 22px;
 }
 
+.wide h3 {
+  font-size: 28px;
+}
+
+.wide p {
+  font-size: 17px;
+  max-width: 460px;
+}
+
 .wide .cardArt {
-  width: 34%;
+  width: 24%;
+  max-width: 230px;
   transform: none;
   margin: 0;
 }
@@ -920,7 +946,7 @@
   .art { max-width: 420px; margin: 0 auto; width: 100%; grid-row: 1; }
   .stats { grid-template-columns: repeat(2, 1fr); }
   .cards { grid-template-columns: 1fr 1fr; }
-  .wide { grid-column: span 2; }
+  .wide { grid-column: 1 / -1; }
   .moods { grid-template-columns: repeat(3, 1fr); }
   .ctaBox { grid-template-columns: 1fr; text-align: center; }
   .ctaBox .ctas { align-items: center; }
@@ -934,7 +960,7 @@
   .store small { font-size: 10px; }
   .ctaBox { padding: 36px 18px; }
   .cards { grid-template-columns: 1fr; }
-  .wide { grid-column: span 1; flex-direction: column; }
+  .wide { grid-column: 1 / -1; flex-direction: column; }
   .wide .cardArt { width: 52%; }
   .stat dd { font-size: 22px; }
   .track { font-size: 18px; }
