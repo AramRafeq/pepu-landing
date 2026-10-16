@@ -195,6 +195,7 @@ export default function Subscribe() {
   // ---- flow state ----
   const [step, setStep] = useState(0); // 0 phone, 1 otp, 2 plans, 3 pay, 4 done
   const [busy, setBusy] = useState(false);
+  const [showPhone, setShowPhone] = useState(false);
   const [phone, setPhone] = useState("");
   const [normalizedPhone, setNormalizedPhone] = useState("");
   const [code, setCode] = useState("");
@@ -872,39 +873,17 @@ export default function Subscribe() {
         {/* ---- step 0: phone ---- */}
         {!restoring && !registering && step === 0 && (
           <Card>
-            <Paragraph>{t("phoneHint")}</Paragraph>
-            <Input
-              size="large"
-              inputMode="tel"
-              placeholder={t("phonePlaceholder")}
-              value={phone}
-              onChange={(e) => setPhone(normalizeDigits(e.target.value))}
-              onPressEnter={sendCode}
-              style={{ direction: "ltr", textAlign: "left" }}
-            />
-            <Button
-              type="primary"
-              size="large"
-              block
-              loading={busy}
-              disabled={!fbReady}
-              onClick={sendCode}
-              style={{ marginTop: 16, background: PURPLE }}
-            >
-              {t("sendCode")}
-            </Button>
-            <div style={{ textAlign: "center", margin: "16px 0 8px" }}>
-              <Text type="secondary">{t("orContinueWith")}</Text>
-            </div>
-            <Space direction="vertical" style={{ width: "100%" }} size={8}>
-              {/* standard provider designs: Google white + official G, Apple black + logo */}
+            {/* Google / Apple first and full-size; phone login is a quiet link
+                below that opens the phone form. Apple sign-in works in any browser. */}
+            <Space direction="vertical" style={{ width: "100%" }} size={12}>
               <Button size="large" block disabled={!fbReady || busy}
                       onClick={() => oauthSignIn("google")}
                       style={{
                         background: "#fff",
                         border: "1px solid #dadce0",
                         color: "#3c4043",
-                        fontWeight: 500,
+                        fontWeight: 600,
+                        height: 52,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -924,7 +903,8 @@ export default function Subscribe() {
                         background: "#000",
                         borderColor: "#000",
                         color: "#fff",
-                        fontWeight: 500,
+                        fontWeight: 600,
+                        height: 52,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -935,7 +915,39 @@ export default function Subscribe() {
                 </svg>
                 {t("continueApple")}
               </Button>
+
             </Space>
+            <div style={{ textAlign: "center", marginTop: 14 }}>
+              <Button type="link" onClick={() => setShowPhone((v) => !v)}
+                      style={{ color: "#8c8c8c", fontWeight: 600 }}>
+                {t("usePhone")} {showPhone ? "▴" : "▾"}
+              </Button>
+            </div>
+            {showPhone && (
+              <div style={{ marginTop: 8 }}>
+                <Paragraph>{t("phoneHint")}</Paragraph>
+                <Input
+                  size="large"
+                  inputMode="tel"
+                  placeholder={t("phonePlaceholder")}
+                  value={phone}
+                  onChange={(e) => setPhone(normalizeDigits(e.target.value))}
+                  onPressEnter={sendCode}
+                  style={{ direction: "ltr", textAlign: "left" }}
+                />
+                <Button
+                  type="primary"
+                  size="large"
+                  block
+                  loading={busy}
+                  disabled={!fbReady}
+                  onClick={sendCode}
+                  style={{ marginTop: 16, background: PURPLE }}
+                >
+                  {t("sendCode")}
+                </Button>
+              </div>
+            )}
           </Card>
         )}
 
