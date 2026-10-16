@@ -1,13 +1,14 @@
-import { Button, Dropdown, Space } from "antd";
+import { Dropdown } from "antd";
 import { GlobalOutlined } from "@ant-design/icons";
 import { BsFacebook, BsInstagram } from "react-icons/bs";
 import Head from "next/head";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useTranslation from "next-translate/useTranslation";
 import Faq from "../src/components/Faq";
-import Features from "../src/components/Features";
 import Testimonial from "../src/components/Testimonial";
+import StoreBadges from "../src/components/StoreBadges";
 import Style from "../styles/index.module.css";
+import H from "../styles/home.module.css";
 import { LANGUAGES } from "~/utils/constants";
 import { handleLanguageChange } from "~/utils/general";
 
@@ -25,8 +26,69 @@ const STATS = [
   { key: "rating", value: "4.2 ★" },
 ];
 
+const FEATURES = [
+  { key: "exams", art: "focus", tone: H.c1 },
+  { key: "tutor", art: "help", tone: H.c2 },
+  { key: "companion", art: "detective", tone: H.c3 },
+  { key: "cards", art: "understood", tone: H.c4 },
+  { key: "focus", art: "lets_start", tone: H.c5 },
+  { key: "streak", art: "celebrate", tone: H.c6 },
+  { key: "friends", art: "laughing", tone: H.c7, wide: true },
+];
+
+const MOODS = ["hello", "laughing", "listening", "thanks", "rest", "encourage"];
+
+/** Adds `shown` to anything with the reveal class once it scrolls into view. */
+function useReveal() {
+  useEffect(() => {
+    const els = document.querySelectorAll(`.${H.reveal}`);
+    if (!("IntersectionObserver" in window)) {
+      els.forEach((el) => el.classList.add(H.shown));
+      return undefined;
+    }
+    const io = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add(H.shown);
+            io.unobserve(e.target);
+          }
+        }),
+      { threshold: 0.15 }
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+}
+
+/** A Pepu that does a squishy boing when poked. */
+function Mood({ name }) {
+  const [poked, setPoked] = useState(false);
+  const timer = useRef();
+  return (
+    <button
+      type="button"
+      className={`${H.mood} ${poked ? H.poked : ""}`}
+      onClick={() => {
+        setPoked(false);
+        clearTimeout(timer.current);
+        requestAnimationFrame(() => setPoked(true));
+        timer.current = setTimeout(() => setPoked(false), 650);
+      }}
+      aria-label="Pepu"
+    >
+      <img src={`/assets/pepu/${name}.webp`} alt="" loading="lazy" />
+    </button>
+  );
+}
+
 export default function Home() {
   const { t, lang } = useTranslation("general");
+  useReveal();
+  const title = t("home.title");
+  const accent = t("home.titleAccent");
+  const [before, after] = title.includes(accent) ? title.split(accent) : [title, ""];
+  const subjects = t("home.subjects");
 
   const currentLanguage = useMemo(() => {
     const match = LANGUAGES.find((item) => item.slug === lang);
@@ -84,90 +146,136 @@ export default function Home() {
         />
       </Head>
 
-      {/* ---- quiet header: wordmark, language, one CTA ---- */}
-      <header className={Style.header}>
-        <a href="/" className={Style.brand}>
-          <img src="/assets/papu.svg" alt="" />
-          <span>پەپوو</span>
-        </a>
-        <div className={Style.headerActions}>
-          <Dropdown
-            menu={{
-              items: languageOptions,
-              onClick: (e) => handleLanguageChange(e.key),
-            }}
-          >
-            <Button type="text" className={Style.langButton} aria-label={currentLanguage}>
-              <Space size={6}>
-                <span className={Style.langLabel}>{currentLanguage}</span>
+      {/* ---- header: floating pill bar, Pepu wordmark, language, one CTA ---- */}
+      <header className={H.topbar}>
+        <div className={H.topbarInner}>
+          <a href="/" className={H.logo}>
+            <img src="/assets/pepu/hello.webp" alt="" />
+            <span>پەپوو</span>
+          </a>
+          <div className={H.topActions}>
+            <Dropdown
+              menu={{
+                items: languageOptions,
+                onClick: (e) => handleLanguageChange(e.key),
+              }}
+            >
+              <button type="button" className={H.langPill} aria-label={currentLanguage}>
                 <GlobalOutlined />
-              </Space>
-            </Button>
-          </Dropdown>
-          <Button type="primary" href="/subscribe" className={Style.headerCta}>
-            {t("subscribeCta")}
-          </Button>
+                <span className={H.langText}>{currentLanguage}</span>
+              </button>
+            </Dropdown>
+            <a href="/subscribe" className={H.topCta}>{t("subscribeCta")}</a>
+          </div>
         </div>
       </header>
 
       <main className={Style.page}>
-        {/* ---- two-column hero: copy on one side, the owl on the other ---- */}
-        <section className={Style.hero}>
-          <div className={Style.heroGrid}>
-            <div className={Style.heroCopy}>
-              <p className={Style.kicker}>{t("header.title")}</p>
-              <h1 className={Style.heroTitle}>{t("footer.title")}</h1>
-              <p className={Style.heroDescription}>{t("header.description")}</p>
-              <div className={Style.heroCtas}>
-                <a href={APP_STORE_URL} className={Style.badge}>
-                  <img src="/assets/appstore.svg" alt="App Store" />
-                </a>
-                <a href={PLAY_STORE_URL} className={Style.badge}>
-                  <img src="/assets/gplay.svg" alt="Google Play" />
-                </a>
+        {/* ---- hero: big headline, waving Pepu on a morphing blob, stickers ---- */}
+        <section className={H.hero}>
+          <div className={H.heroInner}>
+            <div>
+              <span className={H.kicker}>🦉 {t("home.kicker")}</span>
+              <h1 className={H.title}>
+                {before}
+                {after !== "" || title.includes(accent) ? <span className={H.accent}>{accent}</span> : null}
+                {after}
+              </h1>
+              <p className={H.sub}>{t("home.sub")}</p>
+              <div className={H.ctas}>
+                <a href="/subscribe" className={H.bigCta}>{t("subscribeCta")}</a>
+                <StoreBadges />
               </div>
             </div>
-            <div className={Style.heroArt}>
-              <span className={Style.heroBlob} aria-hidden="true" />
-              <img src="/assets/characters/pepu_saying_hi.svg" alt="" />
+            <div className={H.art}>
+              <span className={H.blob} aria-hidden="true" />
+              <img className={H.heroPepu} src="/assets/pepu/hello.webp" alt="Pepu" />
+              <span className={H.bubble}>{t("home.hi")}</span>
+              <span className={`${H.sticker} ${H.s1}`} aria-hidden="true">⭐</span>
+              <span className={`${H.sticker} ${H.s2}`} aria-hidden="true">📚</span>
+              <span className={`${H.sticker} ${H.s3}`} aria-hidden="true">✏️</span>
+              <span className={`${H.sticker} ${H.s4}`} aria-hidden="true">🔥</span>
+              <span className={`${H.sticker} ${H.s5}`} aria-hidden="true">🧪</span>
             </div>
           </div>
 
-          <dl className={Style.statsRow}>
+          <dl className={H.stats}>
             {STATS.map(({ key, value }) => (
-              <div key={key} className={Style.stat}>
-                <dt>{t(`stats.${key}`)}</dt>
+              <div key={key} className={H.stat}>
                 <dd dir="ltr">{value}</dd>
+                <dt>{t(`stats.${key}`)}</dt>
               </div>
             ))}
           </dl>
         </section>
 
-        <div className={Style.container}>
-          <Testimonial />
-          <Features />
-          <Faq />
-          <div className={Style.closingCharacter}>
-            <img src="/assets/characters/pepu_standing_on_books.svg" alt="" />
+        {/* ---- subject ticker ---- */}
+        <div className={H.ticker} aria-hidden="true">
+          <div className={H.track}>
+            {[0, 1, 2, 3].map((i) => (
+              <span key={i}>{subjects} •</span>
+            ))}
           </div>
         </div>
+
+        {/* ---- what Pepu does: one card per feature, each with its own Pepu ---- */}
+        <section className={H.section}>
+          <h2 className={`${H.sectionTitle} ${H.reveal}`}>{t("home.featuresTitle")}</h2>
+          <p className={`${H.sectionSub} ${H.reveal}`}>{t("home.featuresSub")}</p>
+          <div className={H.cards}>
+            {FEATURES.map(({ key, art, tone, wide }) => (
+              <article key={key} className={`${H.card} ${tone} ${wide ? H.wide : ""} ${H.reveal}`}>
+                <div>
+                  <h3>{t(`home.f_${key}_title`)}</h3>
+                  <p>{t(`home.f_${key}_text`)}</p>
+                </div>
+                <img className={H.cardArt} src={`/assets/pepu/${art}.webp`} alt="" loading="lazy" />
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <Testimonial />
+
+        {/* ---- a Pepu for every mood: poke them ---- */}
+        <section className={H.section}>
+          <h2 className={`${H.sectionTitle} ${H.reveal}`}>{t("home.moodsTitle")}</h2>
+          <p className={`${H.sectionSub} ${H.reveal}`}>{t("home.moodsSub")}</p>
+          <div className={`${H.moods} ${H.reveal}`}>
+            {MOODS.map((m) => (
+              <Mood key={m} name={m} />
+            ))}
+          </div>
+        </section>
+
+        <Faq />
+
+        {/* ---- closing call to action ---- */}
+        <section className={`${H.cta} ${H.reveal}`}>
+          <div className={H.ctaBox}>
+            <div>
+              <h2>{t("home.ctaTitle")}</h2>
+              <p>{t("home.ctaSub")}</p>
+              <div className={H.ctas}>
+                <a href="/subscribe" className={H.bigCta}>{t("subscribeCta")}</a>
+                <StoreBadges />
+              </div>
+            </div>
+            <img className={H.ctaPepu} src="/assets/pepu/celebrate.webp" alt="" loading="lazy" />
+            <span className={H.confetti} style={{ top: "12%", insetInlineEnd: "8%" }} aria-hidden="true">🎉</span>
+            <span className={H.confetti} style={{ top: "8%", insetInlineStart: "8%", animationDelay: "-2s" }} aria-hidden="true">✨</span>
+          </div>
+        </section>
       </main>
 
       {/* ---- minimal footer: one hairline, one row ---- */}
       <footer className={Style.footer}>
         <div className={Style.footerRow}>
           <a href="/" className={Style.brand}>
-            <img src="/assets/papu.svg" alt="" />
+            <img src="/assets/pepu/hello.webp" alt="" style={{ height: 36 }} />
             <span>پەپوو</span>
           </a>
-          <div className={Style.footerBadges}>
-            <a href={APP_STORE_URL} className={Style.badge}>
-              <img src="/assets/appstore.svg" alt="App Store" />
-            </a>
-            <a href={PLAY_STORE_URL} className={Style.badge}>
-              <img src="/assets/gplay.svg" alt="Google Play" />
-            </a>
-          </div>
+          <StoreBadges />
           <div className={Style.socials}>
             <a href="https://instagram.com/pepu.krd" aria-label="Instagram">
               <BsInstagram />

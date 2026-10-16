@@ -1,17 +1,18 @@
-import React, { useState } from "react";
-import { Row, Col, Typography, Card, Avatar, Rate, Button } from "antd";
+import { useState } from "react";
 import useTranslation from "next-translate/useTranslation";
 import { testimonials } from "~/src/data/testimonials";
-import Style from "../../styles/testimonial.module.css";
+import H from "../../styles/home.module.css";
 
 // Latin-script Kurdish and English reviews stay left-aligned even though the
 // page itself is RTL; an Arabic-script review follows the page. Judged on the
-// first strong character rather than the page direction, so a review written
-// in Kurmanji Latin does not come out reversed.
+// first strong character, so a review written in Kurmanji Latin is not reversed.
 const isRtlText = (s) => /[؀-ۿݐ-ݿ]/.test((s || "").trim().charAt(0));
 
-const INITIAL_COUNT = 8;
+const INITIAL_COUNT = 6;
+const TONES = ["#9241fe", "#ff8e06", "#1fb6ff", "#22c55e", "#ff5a8a", "#7c5cff"];
+const BUBBLES = ["#f3e9ff", "#fff1dd", "#e6f7ff", "#eafbe9", "#fff0f6", "#ece9ff"];
 
+/** Student reviews as speech-bubble cards in the home page's style. */
 const Testimonial = () => {
   const { t } = useTranslation("general");
   const [expanded, setExpanded] = useState({});
@@ -20,76 +21,70 @@ const Testimonial = () => {
   const visible = showAll ? testimonials : testimonials.slice(0, INITIAL_COUNT);
 
   return (
-    <section className={Style.section} aria-labelledby="testimonials-heading">
-      <Typography id="testimonials-heading" className="sub-header">
-        {t("header.pepuUsers")}
-      </Typography>
+    <section className={H.section} aria-labelledby="testimonials-heading">
+      <div className={`${H.faqHead} ${H.reveal}`}>
+        <img src="/assets/pepu/laughing.webp" alt="" loading="lazy" />
+        <div>
+          <h2 id="testimonials-heading" className={H.sectionTitle}>
+            {t("header.pepuUsers")}
+          </h2>
+          <p className={H.faqSub}>{t("testimonials.source")}</p>
+        </div>
+      </div>
 
-      <Typography.Paragraph className={Style.sourceNote}>
-        {t("testimonials.source")}
-      </Typography.Paragraph>
-
-      <Row gutter={[24, 24]} justify="center" align="stretch">
+      <div className={H.reviews}>
         {visible.map((d, i) => {
           const rtl = isRtlText(d.text);
           const isLong = d.text.length > 150;
           const isOpen = expanded[i];
+          const tone = TONES[i % TONES.length];
           return (
-            <Col key={`${d.name}-${i}`} lg={8} md={12} sm={24} xs={24}>
-              <Card className={Style.card} bordered={false}>
-                <div className={Style.head}>
-                  {/* colored initial, not the Google avatar URL: those
-                      googleusercontent images 404 over time and leak a
-                      request to Google — the initial is uniform and reliable */}
-                  <Avatar size={48} className={Style.avatar}>
-                    {d.name?.trim()?.charAt(0)?.toUpperCase() || "?"}
-                  </Avatar>
-                  <div className={Style.meta}>
-                    <span className={Style.name}>{d.name}</span>
-                    <span className={Style.date}>{d.date}</span>
-                  </div>
+            <article key={`${d.name}-${i}`} className={H.review}>
+              {/* Speech bubble first, the student under it — like a quote. */}
+              <div className={H.reviewBubble} style={{ background: BUBBLES[i % BUBBLES.length] }}>
+                <div className={H.reviewStars} aria-label={`${d.rating} / 5`}>
+                  {"★".repeat(Math.round(d.rating))}
+                  <span>{"★".repeat(5 - Math.round(d.rating))}</span>
                 </div>
-
-                <Rate
-                  disabled
-                  value={d.rating}
-                  className={Style.stars}
-                  aria-label={`${d.rating} / 5`}
-                />
-
-                {/* Truncation is done with real state, not a Tooltip: a
-                    tooltip needs hover, and most of this traffic is phones,
-                    where the full text was unreachable. */}
                 <p
-                  className={`${Style.text} ${!isOpen && isLong ? Style.clamped : ""}`}
+                  className={`${H.reviewText} ${!isOpen && isLong ? H.clamped : ""}`}
                   dir={rtl ? "rtl" : "ltr"}
                   style={{ textAlign: rtl ? "right" : "left" }}
                 >
                   {d.text}
                 </p>
-
                 {isLong && (
-                  <Button
-                    type="link"
-                    size="small"
-                    className={Style.more}
+                  <button
+                    type="button"
+                    className={H.reviewMore}
                     onClick={() => setExpanded((s) => ({ ...s, [i]: !s[i] }))}
                     aria-expanded={!!isOpen}
                   >
                     {isOpen ? t("testimonials.less") : t("testimonials.more")}
-                  </Button>
+                  </button>
                 )}
-              </Card>
-            </Col>
+              </div>
+              <div className={H.reviewWho}>
+                {/* a coloured initial, not the Google avatar URL: those 404
+                    over time and leak a request to Google */}
+                <span className={H.reviewAvatar} style={{ background: tone }}>
+                  {d.name?.trim()?.charAt(0)?.toUpperCase() || "?"}
+                </span>
+                <span className={H.reviewName}>
+                  <b dir="auto">{d.name}</b>
+                  <small>{d.date}</small>
+                </span>
+              </div>
+            </article>
           );
         })}
-      </Row>
+      </div>
 
       {!showAll && testimonials.length > INITIAL_COUNT && (
-        <div className={Style.showAllWrap}>
-          <Button onClick={() => setShowAll(true)} className={Style.showAll}>
+        <div className={H.reviewsMore}>
+          <button type="button" className={H.ghostBtn} onClick={() => setShowAll(true)}>
             {t("testimonials.showAll")}
-          </Button>
+          </button>
         </div>
       )}
     </section>
