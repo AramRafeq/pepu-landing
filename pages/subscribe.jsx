@@ -41,8 +41,8 @@ import {
   registerProfile,
   requestOtp,
   verifyOtp,
-  redeemHandoff,
 } from "~/utils/pepuApi";
+import { FIREBASE_CONFIG, startHandoff } from "~/utils/handoff";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -52,41 +52,9 @@ const { Title, Text, Paragraph } = Typography;
  * page owns the whole loop — same phone OTP as the app, same plans, FIB
  * payment, instant server-side activation. The app just works afterwards.
  */
-const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyBMNis-ERCX9mgPK5zIlgXeC7WB6tJ5pGA",
-  appId: "1:230091316087:web:99868c59b8e8e57cdf1f72",
-  messagingSenderId: "230091316087",
-  projectId: "pepu-platform",
-  authDomain: "pepu-platform.firebaseapp.com",
-  storageBucket: "pepu-platform.firebasestorage.app",
-};
+
 
 const PURPLE = "#9241FE";
-
-/**
- * The app's checkout ad lands here with a one-time sign-in code. The inline
- * script in _document has already lifted it out of the URL, before any
- * analytics could record it, into `window.__pepuHandoff`. It is redeemed at
- * once rather than when Firebase is ready, and abandoned after
- * HANDOFF_WAIT_MS so a late answer can't switch accounts under a page that has
- * moved on.
- */
-const HANDOFF_WAIT_MS = 8000;
-let handoff = null; // { token: Promise<string|null>, deadline: number, used: boolean }
-
-const startHandoff = () => {
-  if (handoff || typeof window === "undefined" || !window.__pepuHandoff) return handoff;
-  const code = window.__pepuHandoff;
-  delete window.__pepuHandoff;
-  handoff = {
-    deadline: Date.now() + HANDOFF_WAIT_MS,
-    used: false,
-    token: redeemHandoff(code)
-      .then((res) => (res.ok && res.data?.customToken) || null)
-      .catch(() => null),
-  };
-  return handoff;
-};
 
 export default function Subscribe() {
   const { t, lang } = useTranslation("subscribe");
@@ -123,8 +91,14 @@ export default function Subscribe() {
     // the race. Any failure just falls through to the session/login we'd
     // show anyway.
     const pending = startHandoff();
-    if (!pending || pending.used) {
+    if (!pending) {
       listen();
+      return;
+    }
+    if (pending.used) {
+      // Another page (see utils/handoff) already started the sign-in; wait
+      // for it, capped, so this page enters as the app's account.
+      (pending.signedIn || Promise.resolve()).then(listen);
       return;
     }
     pending.used = true;
