@@ -9,6 +9,7 @@ import {
   Input,
   Layout,
   message,
+  Modal,
   Result,
   Select,
   Space,
@@ -22,6 +23,8 @@ import useTranslation from "next-translate/useTranslation";
 import {
   cancelFibPayment,
   checkFibPayment,
+  createParentPayLink,
+  parentPayUrl,
   createSubscription,
   getCities,
   getMe,
@@ -55,6 +58,16 @@ const { Title, Text, Paragraph } = Typography;
 
 
 const PURPLE = "#9241FE";
+
+/** The share glyph on the "send to a parent" button (inline: no icon package). */
+const ShareIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+       strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"
+       style={{ verticalAlign: "-3px", marginInlineEnd: 8 }}>
+    <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" />
+    <path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4" />
+  </svg>
+);
 
 export default function Subscribe() {
   const { t, lang } = useTranslation("subscribe");
@@ -184,6 +197,9 @@ export default function Subscribe() {
   const [fib, setFib] = useState(null);
   // what the open FIB payment is for: {kind:"subscription"|"program"|"pack", id}
   const [fibTarget, setFibTarget] = useState(null);
+  // the "send to a parent" link for the picked plan: {url, text}
+  const [parentLink, setParentLink] = useState(null);
+  const [parentBusy, setParentBusy] = useState(false);
   const [programs, setPrograms] = useState([]);
   const [buyingProgramId, setBuyingProgramId] = useState(null);
   // companion credit packs, sold apart from the course plans
@@ -663,6 +679,45 @@ export default function Subscribe() {
   };
 
   const fmt = (n) => new Intl.NumberFormat("en-US").format(n ?? 0);
+
+  // ---- "send to a parent": a link they pay through on their own phone ----
+  // `kind` is "plan" or "pack" (a companion credit pack)
+  const shareWithParent = async (item, kind = "plan") => {
+    if (!item || parentBusy) return;
+    setParentBusy(true);
+    try {
+      const res = await createParentPayLink(
+        token,
+        kind === "pack" ? { creditPackId: item.id } : { planId: item.id }
+      );
+      if (!res.ok || !res.data?.token) {
+        message.error(t("genericError"));
+        return;
+      }
+      const url = parentPayUrl(res.data.token, lang);
+      const text = kind === "pack"
+        ? t("parentShareMessageCredits", { credits: fmt(item.credits), amount: fmt(item.price) })
+        : t("parentShareMessage", {
+            plan: item.nameKurdish,
+            amount: fmt(item.finalPrice ?? item.fullPrice),
+          });
+      setParentLink({ url, text });
+    } catch {
+      message.error(t("genericError"));
+    } finally {
+      setParentBusy(false);
+    }
+  };
+
+  const copyParentLink = async () => {
+    try {
+      // the link alone: pasted after the message text it didn't open cleanly
+      await navigator.clipboard.writeText(parentLink.url);
+      message.success(t("parentCopied"));
+    } catch {
+      message.error(t("genericError"));
+    }
+  };
   const dir = lang === "en" ? "ltr" : "rtl";
 
   const amountDue = useMemo(() => {
@@ -717,7 +772,7 @@ export default function Subscribe() {
         margin: "0 auto",
         padding: "32px 16px",
         // room for the pinned pay bar so it never covers the last card
-        paddingBottom: showPayBar ? "calc(140px + env(safe-area-inset-bottom))" : 32,
+        paddingBottom: showPayBar ? "calc(210px + env(safe-area-inset-bottom))" : 32,
         width: "100%",
       }}>
         <div style={{ textAlign: "center", marginBottom: 24 }}>
@@ -1183,6 +1238,25 @@ export default function Subscribe() {
                 <Button onClick={checkPayment}>{t("fibCheckNow")}</Button>
                 <Button danger onClick={cancelPay}>{t("cancel")}</Button>
               </Space>
+              {((fibTarget?.kind === "subscription" && plan) || (fibTarget?.kind === "pack" && pack)) && (
+                <div style={{ background: "#f4ecff", border: `2px solid ${PURPLE}`, borderRadius: 14, padding: 14, textAlign: "center" }}>
+                  <Text strong style={{ color: PURPLE, fontSize: 15 }}>{t("parentNoFib")}</Text>
+                  <div style={{ marginTop: 4 }}>
+                    <Text type="secondary" style={{ fontSize: 13 }}>{t("parentShareHint")}</Text>
+                  </div>
+                  <Button
+                    type="primary"
+                    size="large"
+                    block
+                    loading={parentBusy}
+                    onClick={() => (fibTarget?.kind === "pack" ? shareWithParent(pack, "pack") : shareWithParent(plan))}
+                    style={{ marginTop: 10, background: PURPLE, fontWeight: 700 }}
+                  >
+                    {!parentBusy && <ShareIcon />}
+                    {t("parentShare")}
+                  </Button>
+                </div>
+              )}
             </Space>
           </Card>
         )}
@@ -1253,9 +1327,56 @@ export default function Subscribe() {
             >
               {payingPack && (pack.price ?? 0) <= 0 ? t("creditsClaimFree") : t("payWithFib")}
             </Button>
+            {(payingPack ? (pack.price ?? 0) > 0 : amountDue > 0) && (
+              <>
+                <div style={{ textAlign: "center", margin: "8px 0 6px" }}>
+                  <Text type="secondary" style={{ fontSize: 13 }}>{t("parentNoFib")}</Text>
+                </div>
+                <Button
+                  size="large"
+                  block
+                  loading={parentBusy}
+                  onClick={() => (payingPack ? shareWithParent(pack, "pack") : shareWithParent(plan))}
+                  style={{ color: PURPLE, borderColor: PURPLE, borderWidth: 2, background: "#f4ecff", fontWeight: 700 }}
+                >
+                  {!parentBusy && <ShareIcon />}
+                  {t("parentShare")}
+                </Button>
+              </>
+            )}
           </div>
         </div>
       )}
+      <Modal
+        open={!!parentLink}
+        onCancel={() => setParentLink(null)}
+        footer={null}
+        title={t("parentLinkTitle")}
+        centered
+      >
+        {parentLink && (
+          <Space direction="vertical" size={12} style={{ width: "100%" }}>
+            <Text type="secondary">{t("parentShareHint")}</Text>
+            <Input value={parentLink.url} readOnly dir="ltr" />
+            <Button type="primary" block size="large" onClick={copyParentLink} style={{ background: PURPLE, fontWeight: 700 }}>
+              {t("parentCopy")}
+            </Button>
+            <Button
+              block
+              size="large"
+              href={`https://wa.me/?text=${encodeURIComponent(`${parentLink.text}\n${parentLink.url}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ background: "#25D366", color: "#fff", borderColor: "#25D366" }}
+            >
+              {t("parentWhatsapp")}
+            </Button>
+            <Text type="secondary" style={{ fontSize: 12 }}>
+              {t("parentLinkValid")} {t("parentAfter")}
+            </Text>
+          </Space>
+        )}
+      </Modal>
     </Layout>
     </ConfigProvider>
   );

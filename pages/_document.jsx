@@ -14,6 +14,19 @@ const HANDOFF_STASH = `(function () {
     if (code) window.__pepuHandoff = code;
   } catch (e) {}
 })();`;
+
+// The parent pay link (/pay#<token>) is a bearer link: lift the token out of
+// the URL before GA or Clarity read the location, the same way as above.
+// Does nothing on any other page.
+const PAY_LINK_STASH = `(function () {
+  try {
+    var path = location.pathname;
+    if (path.slice(-4) !== '/pay' && path.slice(-5) !== '/pay/') return;
+    if (location.hash.length < 2) return;
+    window.__pepuPayLink = location.hash.slice(1);
+    history.replaceState(history.state, '', path + location.search);
+  } catch (e) {}
+})();`;
 class PepuDocument extends Document {
     static async getInitialProps(ctx) {
         const initialProps = await Document.getInitialProps(ctx);
@@ -41,6 +54,7 @@ class PepuDocument extends Document {
                         router can read it; subscribe.jsx redeems it from
                         window.__pepuHandoff. */}
                     <script dangerouslySetInnerHTML={{ __html: HANDOFF_STASH }} />
+                    <script dangerouslySetInnerHTML={{ __html: PAY_LINK_STASH }} />
                     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
                     <meta name="title" content="پەپوو | هاوڕێی خوێندنت" />
                     <meta name="keywords" content="poli12, poli 12, wizary, nishtmani 2022, pepu, papu, pepu.krd, papu.krd, خوێندن, پۆلی شەش, پۆلی ١٢, تاقیکردنەوەی ویزاری," />
