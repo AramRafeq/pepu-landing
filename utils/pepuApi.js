@@ -157,3 +157,27 @@ export const checkCreditPackPayment = (token, packId) =>
 
 export const cancelFibPayment = (token, subscriptionId) =>
   request(`/fib/cancel/${subscriptionId}`, { method: "POST", token });
+
+/** The student asks for a link a parent can pay through: {token, expiresAt}.
+ * `item` is `{ planId }` or `{ creditPackId }`. */
+export const createParentPayLink = (token, item) =>
+  request("/parent-pay", { method: "POST", token, body: item });
+
+/** Anonymous, for the parent's page: {studentName, planName, amount, state}; 404 = unknown link. */
+export const getParentPayLink = (linkToken) =>
+  request(`/parent-pay/${encodeURIComponent(linkToken)}`);
+
+/** Opens the FIB payment for the parent: {transactionState, fib}; 409 = paid, active or expired. */
+export const payParentPayLink = (linkToken) =>
+  request(`/parent-pay/${encodeURIComponent(linkToken)}/pay`, { method: "POST" });
+
+/** 200 once the student's subscription is active. */
+export const checkParentPayLink = (linkToken) =>
+  request(`/fib/check-parent/${encodeURIComponent(linkToken)}`, { method: "POST" });
+
+/** Where the parent opens a link: the token rides in the fragment, so it never
+ * reaches a server log, analytics or a Referer header. */
+export const parentPayUrl = (linkToken, lang) =>
+  `${typeof window !== "undefined" ? window.location.origin : "https://pepu.krd"}${
+    lang && lang !== "ku" ? `/${lang}` : ""
+  }/pay#${linkToken}`;
