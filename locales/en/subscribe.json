@@ -118,5 +118,8 @@
   "payPack": "Pack",
   "payCredits": "{{credits}} credits",
   "payDoneCreditsHint": "The credits are on their account and ready to use.",
-  "payDoneCreditsTitle": "Thank you! The credits are added"
+  "payDoneCreditsTitle": "Thank you! The credits are added",
+  "restoreFailed": "Your account is taking a while to load. Your connection may be slow: try again.",
+  "tryAgain": "Try again",
+  "otherAccount": "Sign in with another account"
 }
