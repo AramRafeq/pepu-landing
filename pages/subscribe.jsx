@@ -45,7 +45,7 @@ import {
   requestOtp,
   verifyOtp,
 } from "~/utils/pepuApi";
-import { FIREBASE_CONFIG, startHandoff } from "~/utils/handoff";
+import { FIREBASE_CONFIG, HANDOFF_WAIT_MS, startHandoff } from "~/utils/handoff";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -58,6 +58,12 @@ const { Title, Text, Paragraph } = Typography;
 
 
 const PURPLE = "#9241FE";
+
+/** How long the page waits on Firebase's custom-token sign-in before showing the login screen. */
+const SIGN_IN_WAIT_MS = 20000;
+
+/** The ceiling on loading a signed-in student's account (profile + shop). */
+const RESTORE_WAIT_MS = 25000;
 
 /** The share glyph on the "send to a parent" button (inline: no icon package). */
 const ShareIcon = () => (
@@ -122,29 +128,35 @@ export default function Subscribe() {
       settled = true;
       listen();
     };
-    // capped like enterWithUser: a stalled request must not hold the spinner
-    const timer = setTimeout(giveUp, Math.max(0, pending.deadline - Date.now()));
+    // Capped so a stalled request can't hold the spinner, but counted from
+    // HERE, once Firebase has loaded: counted from page load, a slow CDN
+    // download used up the wait and a student who was signing in fine was
+    // shown the login screen (and was signed in on refresh).
+    const timer = setTimeout(giveUp, HANDOFF_WAIT_MS);
 
     pending.token.then((customToken) => {
-      // Too late: the page has already entered with whatever was there, and
-      // switching accounts under it would show one student and pay as another.
+      // Too late: the page has already moved on.
       if (settled) return;
+      clearTimeout(timer);
       if (!customToken) {
-        clearTimeout(timer);
         giveUp();
         return;
       }
+      // Signing in: wait for it rather than show the login screen meanwhile.
+      const cap = setTimeout(giveUp, SIGN_IN_WAIT_MS);
       window.firebase
         .auth()
         .signInWithCustomToken(customToken)
         .then(() => {
-          // Landed after the timeout: Firebase now holds the app account but
-          // the page entered another, so start over as the account Firebase has.
-          if (settled) window.location.reload();
+          // Landed after the cap. With nobody entered yet the listener picks
+          // it up; if another account was entered meanwhile, start over as
+          // the account Firebase now has, so the page never shows one
+          // student and pays as another.
+          if (settled && enteredRef.current) window.location.reload();
         })
         .catch(() => {})
         .finally(() => {
-          clearTimeout(timer);
+          clearTimeout(cap);
           giveUp();
         });
     });
@@ -215,6 +227,9 @@ export default function Subscribe() {
   const [mySubs, setMySubs] = useState([]);
   // true until Firebase resolves whether a previous session survives refresh
   const [restoring, setRestoring] = useState(true);
+  // signed in, but the account didn't load (slow or failed): offer a retry,
+  // not the login screen, since the student IS signed in
+  const [restoreFailed, setRestoreFailed] = useState(false);
   const enteredRef = useRef(false);
 
   // ---- registration (accounts born on the checkout, like app onboarding) ----
@@ -314,6 +329,8 @@ export default function Subscribe() {
   const enterWithUser = async (user) => {
     if (enteredRef.current) return;
     enteredRef.current = true;
+    setRestoreFailed(false);
+    setRestoring(true);
 
     // Everything here can stall in the app's in-app browser — getIdToken hits
     // Firebase, getMe hits our API, and an embedded webview drops connections
@@ -348,18 +365,22 @@ export default function Subscribe() {
           throw new Error("catalog failed");
         }
         setStep(2);
+        // a load that outlasted the ceiling still lands: clear the retry card
+        setRestoreFailed(false);
       })();
 
       await Promise.race([
         restore,
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("restore_timeout")), 12000)),
+          setTimeout(() => reject(new Error("restore_timeout")), RESTORE_WAIT_MS)),
       ]);
     } catch (err) {
-      // Release the latch so the login buttons come back and the visitor can
-      // sign in manually instead of staring at a dead page.
+      // Release the latch so a retry (or another sign-in) can enter again.
       enteredRef.current = false;
-      if (String(err?.message).includes("timeout")) {
+      if (window.firebase?.auth?.().currentUser) {
+        // still signed in: the login screen would be wrong, offer a retry
+        setRestoreFailed(true);
+      } else if (String(err?.message).includes("timeout")) {
         message.warning(t("restoreTimedOut"));
       } else {
         message.error(t("genericError"));
@@ -372,11 +393,18 @@ export default function Subscribe() {
   /** Plans + owned subscriptions + marketplace programs, in one place so
    * every entry path (sign-in, restore, registration) shows the same shop. */
   const loadCatalog = async (idToken) => {
-    const subsRes = await getMySubscriptions(idToken);
+    // in parallel: one after another, four round trips from a phone in Iraq
+    // could outlast the restore ceiling and drop a signed-in student at login
+    const [subsRes, plansRes, programsRes, packsRes] = await Promise.all([
+      getMySubscriptions(idToken),
+      getPlans(idToken),
+      getPrograms(idToken),
+      // companion credits are extra: if they can't load (older API, a blip), the shop still works without them
+      getCreditPacks(idToken).catch(() => null),
+    ]);
     const subs = subsRes.data?.items ?? [];
     setMySubs(Array.isArray(subs) ? subs.filter((x) => x.isValid) : []);
 
-    const plansRes = await getPlans(idToken);
     if (!plansRes.ok) {
       message.error(t("genericError"));
       return false;
@@ -389,17 +417,11 @@ export default function Subscribe() {
         : []
     );
 
-    const programsRes = await getPrograms(idToken);
     const programList = programsRes.data?.items ?? [];
     setPrograms(Array.isArray(programList) ? programList : []);
 
-    // companion credits are extra: if they can't load (older API, a blip), the shop still works without them
-    let packList = [];
-    try {
-      const packsRes = await getCreditPacks(idToken);
-      packList = Array.isArray(packsRes.data?.packs) ? packsRes.data.packs : [];
-      setCredits(packsRes.data?.balance ?? 0);
-    } catch { /* tab stays hidden */ }
+    const packList = Array.isArray(packsRes?.data?.packs) ? packsRes.data.packs : [];
+    if (packsRes) setCredits(packsRes.data?.balance ?? 0);
     setPacks(packList);
     // a picked pack that's gone or already claimed is unpicked
     setPack((picked) => (picked && packList.some((x) => x.id === picked.id && !x.claimed)
@@ -415,6 +437,7 @@ export default function Subscribe() {
     } catch { /* already signed out */ }
     enteredRef.current = false;
     pendingToken.current = null;
+    setRestoreFailed(false);
     setMe(null);
     setMySubs([]);
     setToken(null);
@@ -900,7 +923,28 @@ export default function Subscribe() {
         )}
 
         {/* ---- step 0: phone ---- */}
-        {!restoring && !registering && step === 0 && (
+        {!restoring && restoreFailed && (
+          <Card style={{ textAlign: "center" }}>
+            <Paragraph>{t("restoreFailed")}</Paragraph>
+            <Space direction="vertical" style={{ width: "100%" }}>
+              <Button
+                type="primary"
+                size="large"
+                block
+                onClick={() => {
+                  const user = window.firebase?.auth?.().currentUser;
+                  if (user) enterWithUser(user);
+                  else setRestoreFailed(false);
+                }}
+              >
+                {t("tryAgain")}
+              </Button>
+              <Button block onClick={logout}>{t("otherAccount")}</Button>
+            </Space>
+          </Card>
+        )}
+
+        {!restoring && !restoreFailed && !registering && step === 0 && (
           <Card>
             {/* Google / Apple first and full-size; phone login is a quiet link
                 below that opens the phone form. Apple sign-in works in any browser. */}

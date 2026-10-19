@@ -118,5 +118,8 @@
   "payPack": "الباقة",
   "payCredits": "{{credits}} رصيد",
   "payDoneCreditsHint": "تمت إضافة الرصيد إلى حسابه وهو جاهز للاستخدام.",
-  "payDoneCreditsTitle": "شكراً! تمت إضافة الرصيد"
+  "payDoneCreditsTitle": "شكراً! تمت إضافة الرصيد",
+  "restoreFailed": "يتأخر تحميل حسابك، فقد يكون اتصالك بطيئاً. حاول مجدداً.",
+  "tryAgain": "حاول مجدداً",
+  "otherAccount": "تسجيل الدخول بحساب آخر"
 }
