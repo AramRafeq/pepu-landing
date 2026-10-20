@@ -1,14 +1,14 @@
 import Head from "next/head";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Button, Card, ConfigProvider, Layout, Result, Space, Spin, Typography } from "antd";
+import { ConfigProvider, message } from "antd";
 import useTranslation from "next-translate/useTranslation";
+import C from "~/styles/checkout.module.css";
+import { BoltIcon, Btn, LockIcon, UsersIcon } from "~/components/CheckoutUi";
 import {
   checkParentPayLink,
   getParentPayLink,
   payParentPayLink,
 } from "~/utils/pepuApi";
-
-const { Title, Text, Paragraph } = Typography;
 
 const PURPLE = "#9241FE";
 
@@ -119,128 +119,131 @@ export default function Pay() {
     ? (info?.studentName ? t("payForCredits", { name: info.studentName }) : t("payForCreditsNoName"))
     : (info?.studentName ? t("payFor", { name: info.studentName }) : t("payForNoName"));
 
+  const home = lang === "ku" ? "/" : `/${lang}`;
+  const copyCode = async (value) => {
+    try {
+      await navigator.clipboard.writeText(value);
+      message.success(t("copied"));
+    } catch { /* blocked: the code is on screen */ }
+  };
+
+  // a state card: the owl, one line, nothing to do
+  const notice = (owl, text) => (
+    <div className={`${C.card} ${C.success}`}>
+      <img className={C.successOwl} src={`/assets/pepu/${owl}.webp`} alt="" />
+      <p className={C.successTitle} style={{ fontSize: 21 }}>{text}</p>
+    </div>
+  );
+
   return (
     <ConfigProvider
       direction={dir}
-      theme={{
-        token: {
-          fontFamily: "vazirlight, rabar, sans-serif",
-          colorPrimary: PURPLE,
-          borderRadius: 10,
-        },
-      }}
+      theme={{ token: { fontFamily: "vazirlight, rabar, sans-serif", colorPrimary: PURPLE, borderRadius: 14 } }}
     >
-      <Layout style={{ minHeight: "100vh", background: "#f7f7f7" }} dir={dir}>
+      <div className={C.page} dir={dir}>
         <Head>
           <title>{t("payPageTitle")}</title>
           {/* a personal payment link: never index it */}
           <meta name="robots" content="noindex,nofollow" />
           <meta name="referrer" content="no-referrer" />
+          <meta name="theme-color" content="#fbf8ff" />
         </Head>
 
-        <div style={{ maxWidth: 560, margin: "0 auto", padding: "32px 16px", width: "100%" }}>
-          <div style={{ textAlign: "center", marginBottom: 24 }}>
-            <img src="/assets/papu.svg" alt="Pepu" style={{ height: 56 }}
-                 onError={(e) => (e.currentTarget.style.display = "none")} />
-            <Title level={3} style={{ marginTop: 8, fontFamily: "rabar, vazirlight, sans-serif" }}>
-              {t("payPageTitle")}
-            </Title>
-          </div>
+        <main className={C.wrap}>
 
           {status === "loading" && (
-            <Card style={{ textAlign: "center" }}><Spin /></Card>
+            <div className={`${C.card} ${C.loadingCard}`}>
+              <img src="/assets/pepu/waiting.webp" alt="" />
+            </div>
           )}
 
-          {status === "missing" && (
-            <Result status="warning" title={t("payNotFound")} />
-          )}
+          {status === "missing" && notice("help", t("payNotFound"))}
+          {status === "ready" && info?.state === "expired" && notice("waiting", t("payExpired"))}
+          {status === "ready" && info?.state === "active" && notice("understood", t("payActive"))}
 
-          {status === "ready" && info && info.state === "expired" && (
-            <Result status="warning" title={t("payExpired")} />
-          )}
-
-          {status === "ready" && info && info.state === "active" && (
-            <Result status="success" title={t("payActive")} />
-          )}
-
-          {status === "ready" && info && info.state === "open" && (
-            <Card>
-              <Space direction="vertical" size={16} style={{ width: "100%" }}>
-                <Title level={4} style={{ margin: 0, fontFamily: "rabar, vazirlight, sans-serif" }}>
-                  {headline}
-                </Title>
-                <Paragraph type="secondary" style={{ margin: 0 }}>{t(isCredits ? "payWhatIsCredits" : "payWhatIs")}</Paragraph>
-                <div style={{ background: "#f4ecff", borderRadius: 12, padding: "12px 16px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-                    <Text type="secondary">{t(isCredits ? "payPack" : "payPlan")}</Text>
-                    <Text strong>{isCredits ? t("payCredits", { credits: fmt(info.credits) }) : info.planName}</Text>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", gap: 12, marginTop: 6 }}>
-                    <Text type="secondary">{t("payAmount")}</Text>
-                    <Text strong style={{ fontSize: 20, color: PURPLE }}>{fmt(info.amount)} {t("iqd")}</Text>
+          {status === "ready" && info?.state === "open" && (
+            // one card: the owl on its corner, who's asking, what it is, the price, pay
+            <div className={`${C.card} ${C.cardWithOwl}`}>
+              <a href={home} className={`${C.heroHome} ${C.statusOwl}`} aria-label="Pepu">
+                <img className={C.heroOwl} src="/assets/pepu/hello.webp" alt="" />
+              </a>
+              <div className={C.statusHead}>
+                <h1 className={C.heroTitle}>{t("payPageTitle")}</h1>
+                <p className={C.heroSub}>{headline}</p>
+              </div>
+              <p className={C.muted} style={{ margin: "12px 0 14px" }}>{t(isCredits ? "payWhatIsCredits" : "payWhatIs")}</p>
+              <div className={C.priceBanner} style={{ marginBottom: 16 }}>
+                <div>
+                  <div className={C.payLabel}>{t(isCredits ? "payPack" : "payPlan")}</div>
+                  <div className={C.optionName} style={{ fontSize: 18 }}>
+                    {isCredits ? t("payCredits", { credits: fmt(info.credits) }) : info.planName}
                   </div>
                 </div>
-                {failed && <Text type="danger">{t("genericError")}</Text>}
-                <Button
-                  type="primary"
-                  size="large"
-                  block
-                  loading={busy}
-                  onClick={pay}
-                  style={{ background: "#13877C" }}
-                >
-                  {t("payWithFib")}
-                </Button>
-              </Space>
-            </Card>
+                <span className={C.packPrice} style={{ fontSize: 17, marginTop: 0 }}>{fmt(info.amount)} {t("iqd")}</span>
+              </div>
+              {failed && <p style={{ color: "#c0392b", fontWeight: 700, marginBottom: 10 }}>{t("genericError")}</p>}
+              <Btn variant="fib" loading={busy} onClick={pay}>{t("payWithFib")}</Btn>
+              <div className={C.payFoot}><LockIcon /> {t("secureFoot")}</div>
+              <div className={C.trustLine} style={{ marginTop: 12, paddingTop: 12, borderTop: "2px dashed #eee8f7" }}>
+                <span><UsersIcon /> {t("trustStudents")}</span>
+                <span><BoltIcon /> {t("trustInstant")}</span>
+              </div>
+            </div>
           )}
 
           {status === "paying" && fib && (
-            <Card>
-              <Paragraph strong>{t("fibExplain")}</Paragraph>
-              <Space direction="vertical" style={{ width: "100%", textAlign: "center" }} size={16}>
-                {(fib.personalAppLink || fib.businessAppLink) && (
-                  <Button
-                    type="primary"
-                    size="large"
-                    block
-                    href={fib.personalAppLink || fib.businessAppLink}
-                    style={{ background: "#13877C" }}
-                  >
-                    {t("fibOpenApp")}
-                  </Button>
-                )}
-                {qrSrc && (
-                  <div>
-                    <Text type="secondary">{t("fibScanQr")}</Text>
-                    <div><img src={qrSrc} alt="FIB QR" style={{ width: 200, marginTop: 8 }} /></div>
+            <div className={`${C.card} ${C.cardWithOwl}`}>
+              <span className={C.statusOwl}><img className={C.heroOwl} src="/assets/pepu/waiting.webp" alt="" /></span>
+              <div className={C.fibHead}>
+                <div>
+                  <div className={C.payLabel}>{t("payAmount")}</div>
+                  <div className={C.fibAmount}>{fmt(info?.amount)} <small style={{ fontSize: 15 }}>{t("iqd")}</small></div>
+                </div>
+              </div>
+              <ol className={C.fibSteps}>
+                <li className={C.fibStep}>
+                  <span className={C.fibNum}>1</span>
+                  <div className={C.fibStepBody}>
+                    <div style={{ fontWeight: 800, marginBottom: 8 }}>{t("fibStepOpen")}</div>
+                    {(fib.personalAppLink || fib.businessAppLink) && (
+                      <Btn variant="fib" href={fib.personalAppLink || fib.businessAppLink}>{t("fibOpenApp")}</Btn>
+                    )}
                   </div>
-                )}
-                {fib.readableCode && (
-                  <div>
-                    <Text type="secondary">{t("fibTypeCode")}</Text>
-                    <div dir="ltr">
-                      <Text copyable strong style={{ fontSize: 22, letterSpacing: 2 }}>
-                        {fib.readableCode}
-                      </Text>
+                </li>
+                {(qrSrc || fib.readableCode) && (
+                  <li className={C.fibStep}>
+                    <span className={C.fibNum}>2</span>
+                    <div className={C.fibStepBody}>
+                      <div style={{ fontWeight: 800 }}>{t("fibStepOr")}</div>
+                      {qrSrc && <img className={C.qr} src={qrSrc} alt="FIB QR" />}
+                      {fib.readableCode && (
+                        <div className={C.codeBox}>
+                          <span className={C.codeText}>{fib.readableCode}</span>
+                          <button type="button" className={C.copyBtn} onClick={() => copyCode(fib.readableCode)}>{t("copy")}</button>
+                        </div>
+                      )}
                     </div>
-                  </div>
+                  </li>
                 )}
-                <Spin /> <Text type="secondary">{t("fibWaiting")}</Text>
-                <Button onClick={check}>{t("fibCheckNow")}</Button>
-              </Space>
-            </Card>
+                <li className={C.fibStep}>
+                  <span className={C.fibNum}>{qrSrc || fib.readableCode ? 3 : 2}</span>
+                  <div className={C.fibStepBody} style={{ fontWeight: 800, paddingTop: 3 }}>{t("fibStepDone")}</div>
+                </li>
+              </ol>
+              <div className={C.waiting}><span className={C.spinner} /> {t("fibWaiting")}</div>
+              <Btn variant="ghost" onClick={check}>{t("fibCheckNow")}</Btn>
+            </div>
           )}
 
           {status === "done" && (
-            <Result
-              status="success"
-              title={t(isCredits ? "payDoneCreditsTitle" : "payDoneTitle")}
-              subTitle={t(isCredits ? "payDoneCreditsHint" : "payDoneHint")}
-            />
+            <div className={`${C.card} ${C.success}`}>
+              <img className={C.successOwl} src="/assets/pepu/celebrate.webp" alt="" />
+              <div className={C.successTitle}>{t(isCredits ? "payDoneCreditsTitle" : "payDoneTitle")}</div>
+              <p className={C.muted} style={{ marginTop: 6 }}>{t(isCredits ? "payDoneCreditsHint" : "payDoneHint")}</p>
+            </div>
           )}
-        </div>
-      </Layout>
+        </main>
+      </div>
     </ConfigProvider>
   );
 }

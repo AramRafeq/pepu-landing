@@ -124,3 +124,8 @@ html {
 html, body {
   overflow-x: clip;
 }
+
+/* the checkout's pinned pay bar takes the bottom of the screen */
+body.pepu-paybar-open .pepu-messenger {
+  display: none;
+}
