@@ -21,7 +21,7 @@ const Testimonial = () => {
   const visible = showAll ? testimonials : testimonials.slice(0, INITIAL_COUNT);
 
   return (
-    <section className={H.section} aria-labelledby="testimonials-heading">
+    <section id="reviews" className={H.section} aria-labelledby="testimonials-heading">
       <div className={`${H.faqHead} ${H.reveal}`}>
         <img src="/assets/pepu/laughing.webp" alt="" loading="lazy" />
         <div>
@@ -42,10 +42,13 @@ const Testimonial = () => {
             <article key={`${d.name}-${i}`} className={H.review}>
               {/* Speech bubble first, the student under it — like a quote. */}
               <div className={H.reviewBubble} style={{ background: BUBBLES[i % BUBBLES.length] }}>
-                <div className={H.reviewStars} aria-label={`${d.rating} / 5`}>
-                  {"★".repeat(Math.round(d.rating))}
-                  <span>{"★".repeat(5 - Math.round(d.rating))}</span>
-                </div>
+                {/* only a review that came with a rating shows stars */}
+                {d.rating ? (
+                  <div className={H.reviewStars} aria-label={`${d.rating} / 5`}>
+                    {"★".repeat(Math.round(d.rating))}
+                    <span>{"★".repeat(5 - Math.round(d.rating))}</span>
+                  </div>
+                ) : null}
                 <p
                   className={`${H.reviewText} ${!isOpen && isLong ? H.clamped : ""}`}
                   dir={rtl ? "rtl" : "ltr"}

@@ -6,6 +6,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import useTranslation from "next-translate/useTranslation";
 import Faq from "../src/components/Faq";
 import Testimonial from "../src/components/Testimonial";
+import { HeroQuotes, HeroProof } from "../src/components/HeroQuotes";
+import HeroPepu from "../src/components/HeroPepu";
 import StoreBadges from "../src/components/StoreBadges";
 import Style from "../styles/index.module.css";
 import H from "../styles/home.module.css";
@@ -88,7 +90,6 @@ export default function Home() {
   const title = t("home.title");
   const accent = t("home.titleAccent");
   const [before, after] = title.includes(accent) ? title.split(accent) : [title, ""];
-  const subjects = t("home.subjects");
 
   const currentLanguage = useMemo(() => {
     const match = LANGUAGES.find((item) => item.slug === lang);
@@ -174,7 +175,7 @@ export default function Home() {
       </header>
 
       <main className={`${Style.page} ${H.clip}`}>
-        {/* ---- hero: big headline, waving Pepu on a morphing blob, stickers ---- */}
+        {/* ---- hero: big headline, waving Pepu in a liquid pool (tap to leap), students' words around them ---- */}
         <section className={H.hero}>
           <div className={H.heroInner}>
             <div>
@@ -189,16 +190,14 @@ export default function Home() {
                 <a href="/subscribe" className={H.bigCta}>{t("subscribeCta")}</a>
                 <StoreBadges />
               </div>
+              <HeroProof />
             </div>
             <div className={H.art}>
-              <span className={H.blob} aria-hidden="true" />
-              <img className={H.heroPepu} src="/assets/pepu/hello.webp" alt="Pepu" />
+              <HeroPepu />
               <span className={H.bubble}>{t("home.hi")}</span>
               <span className={`${H.sticker} ${H.s1}`} aria-hidden="true">⭐</span>
               <span className={`${H.sticker} ${H.s2}`} aria-hidden="true">📚</span>
-              <span className={`${H.sticker} ${H.s3}`} aria-hidden="true">✏️</span>
-              <span className={`${H.sticker} ${H.s4}`} aria-hidden="true">🔥</span>
-              <span className={`${H.sticker} ${H.s5}`} aria-hidden="true">🧪</span>
+              <HeroQuotes />
             </div>
           </div>
 
@@ -212,14 +211,8 @@ export default function Home() {
           </dl>
         </section>
 
-        {/* ---- subject ticker ---- */}
-        <div className={H.ticker} aria-hidden="true">
-          <div className={H.track}>
-            {[0, 1, 2, 3].map((i) => (
-              <span key={i}>{subjects} •</span>
-            ))}
-          </div>
-        </div>
+        {/* ---- what students say, straight after the hero ---- */}
+        <Testimonial />
 
         {/* ---- what Pepu does: one card per feature, each with its own Pepu ---- */}
         <section className={H.section}>
@@ -237,8 +230,6 @@ export default function Home() {
             ))}
           </div>
         </section>
-
-        <Testimonial />
 
         {/* ---- a Pepu for every mood: poke them ---- */}
         <section className={H.section}>

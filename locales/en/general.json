@@ -80,7 +80,7 @@
   },
   "__Testimonials__": "",
   "testimonials": {
-    "source": "Real reviews from Google Play users",
+    "source": "Real reviews from Pepu users",
     "more": "Read more",
     "less": "Show less",
     "showAll": "See all reviews"
@@ -88,6 +88,7 @@
   "subscribeCta": "Subscribe / Renew plan",
   "contactMessenger": "Chat with us on Messenger",
   "home": {
+    "proof": "See what students say",
     "hi": "Hi! 👋",
     "kicker": "Your study buddy",
     "title": "Studying is easier with Pepu",
