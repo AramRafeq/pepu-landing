@@ -1509,6 +1509,199 @@
   box-shadow: 0 4px 0 #1d1530;
 }
 
+/* ==== checkout experiment (utils/experiment): parent sheet + wizard ==== */
+.btnViber {
+  background: #7360f2;
+  color: #fff !important;
+  box-shadow: 0 4px 0 #1d1530;
+}
+
+/* the parent sheet: hand the phone over first, then QR, then send */
+.handover {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  background: #f8f3ff;
+  border: 2px solid #9241fe;
+  box-shadow: 0 4px 0 #9241fe;
+}
+.handoverHead { display: flex; gap: 12px; align-items: flex-start; }
+.handoverOwl { width: 64px; height: 64px; flex: none; object-fit: contain; }
+.handoverTitle {
+  font-family: rabar, vazirlight, sans-serif;
+  font-weight: 800;
+  font-size: 17px;
+  color: #1d1530;
+}
+.orLine {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #a39cba;
+  font-size: 13px;
+  font-weight: 700;
+}
+.orLine::before, .orLine::after { content: ""; flex: 1; height: 2px; background: #eee7fb; border-radius: 2px; }
+.qrBlock { text-align: center; }
+.qrPlaceholder {
+  width: 200px;
+  height: 200px;
+  margin: 10px auto 0;
+  border-radius: 16px;
+  background: #f4f0fb;
+}
+
+/* the wizard: one question per screen */
+.wizard { text-align: center; }
+.wizard .option { text-align: start; }
+/* the steps: tappable pills, any reached step jumps back */
+.wizardSteps {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px;
+}
+.wizardStep {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 4px 12px 4px 6px;
+  border-radius: 999px;
+  border: 2px solid #eee7fb;
+  background: #fff;
+  color: #a39cba;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: default;
+}
+.wizardStepNum {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #eee7fb;
+  font-size: 12.5px;
+}
+.wizardStepOn { border-color: #9241fe; color: #6a1fd6; }
+.wizardStepOn .wizardStepNum { background: #9241fe; color: #fff; }
+.wizardStepDone { border-color: #d8cdef; color: #1d1530; cursor: pointer; }
+.wizardStepDone .wizardStepNum { background: #f4ecff; color: #6a1fd6; }
+.wizardStepDone:active { transform: translateY(2px); }
+
+/* the answers so far: tap one to change just it */
+.wizardAnswers {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 2px 0 8px;
+}
+.wizardAnswer {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  border: 2px solid #9241fe;
+  background: #f4ecff;
+  color: #6a1fd6;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  box-shadow: 0 3px 0 #9241fe;
+  cursor: pointer;
+}
+.wizardAnswer:active { transform: translateY(2px); box-shadow: 0 1px 0 #9241fe; }
+
+.wizardBack {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  align-self: flex-start;
+  min-height: 40px;
+  padding: 0 8px 0 2px;
+  margin-bottom: -6px;
+  border: 0;
+  background: none;
+  color: #6b6384;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.wizard .wizardBack { float: inline-start; }
+[dir="ltr"] .wizardBack svg { transform: scaleX(-1); }
+.wizardOwl {
+  clear: both;
+  display: block;
+  width: 110px;
+  height: 110px;
+  margin: 0 auto 4px;
+  object-fit: contain;
+  animation: wizardPop 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.4) both;
+}
+@keyframes wizardPop { from { transform: scale(0.8) translateY(8px); opacity: 0; } }
+.wizardQ {
+  font-family: rabar, vazirlight, sans-serif;
+  font-weight: 800;
+  font-size: 23px;
+  color: #1d1530;
+  margin: 2px 0 14px;
+}
+/* the payer's icon tile: green for FIB, purple for someone else, like the buttons */
+.wizardIcon {
+  flex: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+}
+.wizardIcon_me { background: #e3f4f2; color: #13877c; }
+.wizardIcon_parent { background: #f4ecff; color: #9241fe; }
+.wizardIcon_unsure { background: #fff3df; color: #d98a00; }
+.btnIcon { font-size: 24px; margin-inline-end: 8px; flex: none; }
+.btnBig { min-height: 58px; font-size: 18px; }
+.wizardPrice {
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 16px;
+  background: #fbf8ff;
+  border: 2px dashed #d8cdef;
+}
+.wizardFoot {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 8px;
+}
+.wizardChip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #f4ecff;
+  border: 2px solid #d8cdef;
+  font-weight: 700;
+  font-size: 14px;
+  color: #6a1fd6;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wizardOwl { animation: none; }
+}
+
 /* ---- phones ---- */
 @media (max-width: 400px) {
   .hero { grid-template-columns: 1fr 96px; }

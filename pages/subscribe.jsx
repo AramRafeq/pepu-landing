@@ -37,6 +37,12 @@ import {
   verifyOtp,
 } from "~/utils/pepuApi";
 import { FIREBASE_CONFIG, HANDOFF_WAIT_MS, startHandoff } from "~/utils/handoff";
+import ParentSheet from "~/components/ParentSheet";
+import CheckoutWizard, { WizardAnswers, WizardPlan, wizardStage } from "~/components/CheckoutWizard";
+import { DEFAULT_CHECKOUT_FLOW, pickCheckoutFlow, recordCheckoutFlow, tagCheckoutFlow, trackCheckout } from "~/utils/experiment";
+
+/** The wizard's answers survive a refresh or an OAuth round trip in this tab. */
+const WIZ_KEY = "pepu-checkout-wizard";
 
 
 /**
@@ -218,6 +224,30 @@ export default function Subscribe() {
   const [pack, setPack] = useState(null);
   const [shopTab, setShopTab] = useState("plans");
   const idempotencyKey = useRef(null);
+
+  // ---- checkout flow (utils/experiment): wizard by default, classic kept ----
+  // starts on the default so the first paint is already the right flow
+  const [flow, setFlow] = useState(DEFAULT_CHECKOUT_FLOW);
+  const [wiz, setWiz] = useState({ grade: null, payer: null, editing: null, browse: false });
+  const recordedFlow = useRef(false);
+  useEffect(() => {
+    const picked = pickCheckoutFlow();
+    setFlow(picked);
+    tagCheckoutFlow(picked);
+    try {
+      const kept = JSON.parse(window.sessionStorage.getItem(WIZ_KEY) || "null");
+      if (kept && typeof kept === "object") {
+        // only the answers come back: "show every plan" is a moment, not a setting
+        setWiz((w) => ({ ...w, grade: kept.grade ?? null, payer: kept.payer ?? null }));
+      }
+    } catch { /* fresh answers */ }
+  }, []);
+  const saveWiz = (next) => {
+    setWiz(next);
+    try {
+      window.sessionStorage.setItem(WIZ_KEY, JSON.stringify({ grade: next.grade, payer: next.payer }));
+    } catch { /* lives for this page */ }
+  };
 
   const [me, setMe] = useState(null);
   const [mySubs, setMySubs] = useState([]);
@@ -558,6 +588,7 @@ export default function Subscribe() {
   // ---- step 2 → 3: create draft + open the FIB payment ----
   const pay = async () => {
     if (!plan) return;
+    trackCheckout("checkout_pay_fib", { flow });
     setBusy(true);
     idempotencyKey.current = crypto.randomUUID();
     try {
@@ -721,6 +752,7 @@ export default function Subscribe() {
             amount: fmt(item.finalPrice ?? item.fullPrice),
           });
       setParentLink({ url, text });
+      trackCheckout("parent_link", { flow, kind });
     } catch {
       message.error(t("genericError"));
     } finally {
@@ -739,6 +771,37 @@ export default function Subscribe() {
   };
   const dir = lang === "en" ? "ltr" : "rtl";
 
+  // ---- experiment wiring ----
+  // the arm is recorded once the student is known (first one wins server-side)
+  useEffect(() => {
+    if (!token || recordedFlow.current) return;
+    recordedFlow.current = true;
+    recordCheckoutFlow(token, flow);
+    trackCheckout("checkout_signed_in", { flow });
+  }, [token, flow]);
+  useEffect(() => {
+    if (step === 4) trackCheckout("checkout_paid", { flow });
+  }, [step, flow]);
+
+  const isWizard = flow === "wizard";
+  // the questions come first, before the account (signed-in students too)
+  // (they need nothing from the server, so they don't wait for the session check)
+  const wizStage = wizardStage(wiz);
+  const showWizardQs = isWizard && wizStage !== "done" && !restoreFailed && !registering && step <= 2;
+  // then one plan card in place of the shop, until "show every plan"
+  const showWizardPlan = isWizard && wizStage === "done" && !wiz.browse && step === 2 && plans !== null && !registering;
+  const ownedPlanOf = (p) => !!p.ownedSubscriptionValidTo && new Date(p.ownedSubscriptionValidTo) > new Date();
+
+  // the wizard's grade picks the plan when that grade has one section to buy
+  useEffect(() => {
+    if (!showWizardPlan) return;
+    const buyable = plans.filter((p) => gradeOf(p) === wiz.grade && !ownedPlanOf(p));
+    if (plan && gradeOf(plan) === wiz.grade) return;
+    setPlan(buyable.length === 1 ? buyable[0] : null);
+    setPromoResult(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showWizardPlan, plans, wiz.grade]);
+
   const amountDue = useMemo(() => {
     if (promoResult) return promoResult.paidAmount;
     return plan?.finalPrice ?? plan?.fullPrice ?? 0;
@@ -756,7 +819,7 @@ export default function Subscribe() {
   // ever seeing it. Once a plan is picked it rides pinned to the bottom.
   // one pay bar for both tabs: the picked plan, or the picked credit pack
   const payingPack = shopTab === "credits" && !!pack;
-  const showPayBar = step === 2 && !registering &&
+  const showPayBar = step === 2 && !registering && !showWizardPlan && !showWizardQs &&
     ((shopTab === "plans" && !!plan) || payingPack);
 
   // the site-wide Messenger button would sit on top of the pay button
@@ -849,7 +912,7 @@ export default function Subscribe() {
                 <button type="button" className={C.smallLink} onClick={logout}>{t("logout")}</button>
               </div>
             )}
-            {!registering && (
+            {!registering && !isWizard && (
               <ol className={C.progress} aria-label={t("stepPay")}>
                 {stepLabels.map((label, i) => (
                   <li key={label}
@@ -870,7 +933,7 @@ export default function Subscribe() {
           </section>
         )}
 
-        {restoring && (
+        {restoring && !showWizardQs && (
           <div className={`${C.card} ${C.loadingCard}`}>
             <img src="/assets/pepu/waiting.webp" alt="" />
             {t("restoring")}
@@ -944,7 +1007,20 @@ export default function Subscribe() {
         )}
 
         {/* ---- step 0: sign in ---- */}
-        {!restoring && !restoreFailed && !registering && step === 0 && (
+        {showWizardQs && (
+          <CheckoutWizard
+            answers={wiz}
+            onChange={saveWiz}
+            onDone={(next) => trackCheckout("wizard_done", { flow, grade: next.grade, payer: next.payer })}
+          />
+        )}
+
+        {/* the wizard's answers ride along above the sign-in */}
+        {isWizard && wizStage === "done" && !restoring && !registering && step <= 1 && (
+          <WizardAnswers answers={wiz} onChange={saveWiz} />
+        )}
+
+        {!restoring && !restoreFailed && !registering && !showWizardQs && step === 0 && (
           <div className={C.card}>
             <div className={C.cardTitle}>{t("loginTitle")}</div>
             <p className={C.muted} style={{ marginBottom: 16 }}>{t("loginSub")}</p>
@@ -991,7 +1067,7 @@ export default function Subscribe() {
         )}
 
         {/* ---- step 1: otp ---- */}
-        {!restoring && !registering && step === 1 && (
+        {!restoring && !registering && !showWizardQs && step === 1 && (
           <div className={C.card}>
             <div className={C.cardTitle}>{t("verify")}</div>
             <p className={C.muted} style={{ marginBottom: 14 }}>{t("codeHint", { phone: normalizedPhone })}</p>
@@ -1022,7 +1098,33 @@ export default function Subscribe() {
         )}
 
         {/* ---- step 2: the shop — packages, video programs, credits ---- */}
-        {step === 2 && (
+        {showWizardPlan && (
+          <WizardPlan
+            plans={plans}
+            answers={wiz}
+            onChange={saveWiz}
+            plan={plan}
+            onPickPlan={(p) => { setPlan(p); setPromoResult(null); }}
+            amount={amountDue}
+            fmt={fmt}
+            gradeOf={gradeOf}
+            trackOf={trackOf}
+            isOwned={ownedPlanOf}
+            onPayFib={pay}
+            onParent={() => shareWithParent(plan)}
+            busy={busy}
+            parentBusy={parentBusy}
+            onBrowse={() => saveWiz({ ...wiz, browse: true })}
+          />
+        )}
+
+        {isWizard && wiz.browse && step === 2 && !registering && (
+          <div className={C.wizardAnswers}>
+            <Btn variant="ghost" onClick={() => saveWiz({ ...wiz, browse: false })}>{t("xWizBackToPlan")}</Btn>
+          </div>
+        )}
+
+        {step === 2 && !showWizardQs && !showWizardPlan && (
           plans === null ? (
             <div className={`${C.card} ${C.loadingCard}`}>
               <img src="/assets/pepu/waiting.webp" alt="" />
@@ -1416,8 +1518,10 @@ export default function Subscribe() {
         </div>
       )}
 
+      {flow !== "classic" && <ParentSheet link={parentLink} onClose={() => setParentLink(null)} />}
+
       <Modal
-        open={!!parentLink}
+        open={flow === "classic" && !!parentLink}
         onCancel={() => setParentLink(null)}
         footer={null}
         title={<span style={{ fontFamily: "rabar, vazirlight, sans-serif", fontSize: 19 }}>{t("parentLinkTitle")}</span>}

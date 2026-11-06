@@ -175,6 +175,10 @@ export const payParentPayLink = (linkToken) =>
 export const checkParentPayLink = (linkToken) =>
   request(`/fib/check-parent/${encodeURIComponent(linkToken)}`, { method: "POST" });
 
+/** Records the experiment arm a signed-in student saw (first one wins). */
+export const assignExperiment = (token, experiment, variant) =>
+  request(`/experiments/${encodeURIComponent(experiment)}/assignment`, { token, method: "POST", body: { variant } });
+
 /** Where the parent opens a link: the token rides in the fragment, so it never
  * reaches a server log, analytics or a Referer header. */
 export const parentPayUrl = (linkToken, lang) =>

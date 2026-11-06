@@ -9,7 +9,7 @@ import C from "~/styles/checkout.module.css";
 export function Btn({ variant = "primary", loading = false, disabled = false, href, className = "", children, ...rest }) {
   const variants = {
     primary: C.btnPrimary, fib: C.btnFib, ghost: C.btnGhost, parent: C.btnParent,
-    apple: C.btnApple, danger: C.btnDanger, whatsapp: C.btnWhatsapp,
+    apple: C.btnApple, danger: C.btnDanger, whatsapp: C.btnWhatsapp, viber: C.btnViber,
   };
   const cls = `${C.btn} ${variants[variant] ?? ""} ${className}`;
   const body = <>{loading && <span className={C.spinner} />}{children}</>;
