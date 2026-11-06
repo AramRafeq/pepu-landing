@@ -9,6 +9,7 @@ import {
   getParentPayLink,
   payParentPayLink,
 } from "~/utils/pepuApi";
+import { HANDOVER_KEY } from "~/utils/experiment";
 
 const PURPLE = "#9241FE";
 
@@ -26,6 +27,11 @@ export default function Pay() {
   const [fib, setFib] = useState(null);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
+  // the student handed this phone over (ParentSheet): offer the way back
+  const [handedOver, setHandedOver] = useState(false);
+  useEffect(() => {
+    try { setHandedOver(window.sessionStorage.getItem(HANDOVER_KEY) === "1"); } catch { /* no way back offered */ }
+  }, []);
 
   // _document's inline script has already moved the token out of the URL
   useEffect(() => {
@@ -240,6 +246,11 @@ export default function Pay() {
               <img className={C.successOwl} src="/assets/pepu/celebrate.webp" alt="" />
               <div className={C.successTitle}>{t(isCredits ? "payDoneCreditsTitle" : "payDoneTitle")}</div>
               <p className={C.muted} style={{ marginTop: 6 }}>{t(isCredits ? "payDoneCreditsHint" : "payDoneHint")}</p>
+              {handedOver && (
+                <div style={{ marginTop: 16 }}>
+                  <Btn variant="primary" href={lang === "ku" ? "/subscribe" : `/${lang}/subscribe`}>{t("xHandBack")}</Btn>
+                </div>
+              )}
             </div>
           )}
         </main>
